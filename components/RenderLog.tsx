@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
-import team1 from '../redux/team1'
 import colors from '../constants/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
+import { RootState } from '../redux'
 
 export default function RenderLogs({ item }: any) {
+  const team1 = useSelector((state: RootState) => state.team1.team)
+
   return (
     <>
       {item.status === 'kill' ? (
@@ -78,11 +81,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   playerKill: {
-    fontSize: 18,
+    fontSize: 16,
     marginRight: 10,
   },
   playerDead: {
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 10,
   },
   winLog: {

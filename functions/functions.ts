@@ -11,6 +11,7 @@ export function GetTeamRating(team: any) {
 export function RandomTeamToAttak(team1: any, team2: any) {
   let t1 = GetTeamRating(team1)
   let t2 = GetTeamRating(team2)
+
   let random = Math.random() * (t1 + t2)
   if (random <= t1) {
     return [team1, team2]

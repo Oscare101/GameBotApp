@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  Animated,
-  Easing,
   FlatList,
   StatusBar,
   StyleSheet,
@@ -26,11 +24,13 @@ import {
 } from '../functions/functions'
 import colors from '../constants/colors'
 import RenderLogs from '../components/RenderLog'
+import TeamHeader from '../components/TeamHeader'
+import ScoreBlock from '../components/ScoreBlock'
 
 const NOVA: Team = {
   team: {
     name: 'NOVA',
-    motivation: 0.5,
+    motivation: 0.8,
     tactic: 0.7,
     players: [
       { nickName: 'Oscare', rating: 1.55 },
@@ -46,7 +46,7 @@ const Quazars: any = {
   team: {
     name: 'Quazars',
     motivation: 0.5,
-    tactic: 0.5,
+    tactic: 0.6,
     players: [
       { nickName: 'Header', rating: 1.48 },
       { nickName: 'Xantares', rating: 1.35 },
@@ -57,16 +57,42 @@ const Quazars: any = {
   },
 }
 
-const team1Grid = NOVA
+const OG: any = {
+  team: {
+    name: 'OG',
+    motivation: 0.5,
+    tactic: 0.5,
+    players: [
+      { nickName: 'Olaph', rating: 1.3 },
+      { nickName: 'Focus', rating: 1.2 },
+      { nickName: 'Boros', rating: 1.2 },
+      { nickName: 'Torin', rating: 1.22 },
+      { nickName: 'Refresh', rating: 1.17 },
+    ],
+  },
+}
+
+const Vangard: any = {
+  team: {
+    name: 'Vangard',
+    motivation: 0.5,
+    tactic: 0.5,
+    players: [
+      { nickName: 'Fury', rating: 1.21 },
+      { nickName: 'Leon', rating: 1.18 },
+      { nickName: 'Maden', rating: 1.17 },
+      { nickName: 'Raven', rating: 1.17 },
+      { nickName: 'Gash', rating: 1.15 },
+    ],
+  },
+}
+
+const team1Grid = OG
 const team2Grid = Quazars
 
-const delay: any = 1000 // milliseconds for every action
+const delay: any = 10 // milliseconds for every action
 const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
-
-const economicsRanges = [0.2, 0.4, 0.6, 0.8, 1]
-const economicsWin = [0.4, 0.3, 0.25, 0.2, 0.15]
-const economicsLoss = [0.1, 0.15, 0.2, 0.3, 0.4]
 
 export default function Main() {
   const team1 = useSelector((state: RootState) => state.team1.team)
@@ -159,34 +185,37 @@ export default function Main() {
         clearInterval(intervalId)
       }
     }
-  }, [dispatch, gameIsActive, log])
+  }, [dispatch, gameIsActive, log, team1, team2])
 
   function ContinueGame() {
-    setGameIsActive(true)
+    let team1Value = team1
+    team1Value = {
+      ...team1Value,
+      economics: 0.5,
+    }
+    dispatch(updateTeam1(team1Value))
+
+    let team2Value = team2
+    team2Value = {
+      ...team2Value,
+      economics: 0.5,
+    }
+    dispatch(updateTeam2(team2Value))
+
     setRounds(rounds + additionalRounds)
+    setGameIsActive(true)
   }
 
   async function StartTheGame() {
     setRounds(MRNumber)
     dispatch(clearLog())
+
     let team1Value = team1Grid.team
     team1Value.economics = 0.5
-    team1Value = {
-      ...team1Value,
-      players: team1Value.players.map((player: any) => ({
-        ...player,
-      })),
-    }
     dispatch(updateTeam1(team1Value))
 
     let team2Value = team2Grid.team
     team2Value.economics = 0.5
-    team2Value = {
-      ...team2Value,
-      players: team2Value.players.map((player: any) => ({
-        ...player,
-      })),
-    }
     dispatch(updateTeam2(team2Value))
     setGameIsActive(true)
   }
@@ -198,21 +227,17 @@ export default function Main() {
           width: '100%',
           flexDirection: 'row',
           opacity: GetDeadPlayerInRound(item, log) ? 0.5 : 1,
+          backgroundColor: GetDeadPlayerInRound(item, log)
+            ? '#00000000'
+            : '#fff',
+          borderRadius: 5,
+          marginVertical: 2,
+          alignItems: 'center',
         }}
       >
-        <Text
-          style={{
-            width: '50%',
-            fontSize: 18,
-            color: '#000',
-          }}
-        >
-          {item.nickName}
-        </Text>
-        <Text style={{ width: '20%', color: '#000', textAlign: 'center' }}>
-          {item.rating}
-        </Text>
-        <Text style={{ width: '15%', color: '#000', textAlign: 'center' }}>
+        <Text style={styles.userName}>{item.nickName}</Text>
+        <Text style={styles.userRating}>{item.rating}</Text>
+        <Text style={styles.userDeath}>
           {
             log.filter(
               (i: any) =>
@@ -222,7 +247,7 @@ export default function Main() {
             ).length
           }
         </Text>
-        <Text style={{ width: '15%', color: '#000', textAlign: 'center' }}>
+        <Text style={styles.userKill}>
           {
             log.filter(
               (i: any) =>
@@ -243,12 +268,15 @@ export default function Main() {
           width: '100%',
           flexDirection: 'row',
           opacity: GetDeadPlayerInRound(item, log) ? 0.5 : 1,
+          backgroundColor: GetDeadPlayerInRound(item, log)
+            ? '#00000000'
+            : '#fff',
+          borderRadius: 5,
+          marginVertical: 2,
+          alignItems: 'center',
         }}
       >
-        <Text style={{ width: '20%', color: '#000', textAlign: 'center' }}>
-          {item.rating}
-        </Text>
-        <Text style={{ width: '15%', color: '#000', textAlign: 'center' }}>
+        <Text style={styles.userKill}>
           {
             log.filter(
               (i: any) =>
@@ -258,7 +286,7 @@ export default function Main() {
             ).length
           }
         </Text>
-        <Text style={{ width: '15%', color: '#000', textAlign: 'center' }}>
+        <Text style={styles.userDeath}>
           {
             log.filter(
               (i: any) =>
@@ -268,14 +296,9 @@ export default function Main() {
             ).length
           }
         </Text>
-        <Text
-          style={{
-            width: '50%',
-            fontSize: 18,
-            color: '#000',
-            textAlign: 'right',
-          }}
-        >
+        <Text style={styles.userRating}>{item.rating}</Text>
+
+        <Text style={[styles.userName, { textAlign: 'right' }]}>
           {item.nickName}
         </Text>
       </View>
@@ -292,65 +315,8 @@ export default function Main() {
       }}
     >
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
-      <View style={styles.header}>
-        <Text style={[styles.teamName, { color: colors.team1NameColor }]}>
-          {team1.name}
-        </Text>
-        <Text style={styles.score}>
-          {GetScore(team1, log)}-{GetScore(team2, log)}
-        </Text>
-        <Text
-          style={[
-            styles.teamName,
-            { color: colors.team2NameColor, textAlign: 'right' },
-          ]}
-        >
-          {team2.name}
-        </Text>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 10,
-        }}
-      >
-        <View style={{ width: '50%', flexDirection: 'row' }}>
-          <Text style={{ width: '50%', color: '#999' }}>name</Text>
-          <Text style={{ width: '20%', color: '#999', textAlign: 'center' }}>
-            R
-          </Text>
-          <Text style={{ width: '15%', color: '#999', textAlign: 'center' }}>
-            K
-          </Text>
-          <Text style={{ width: '15%', color: '#999', textAlign: 'center' }}>
-            D
-          </Text>
-        </View>
-        <View
-          style={{
-            width: 1,
-            height: '100%',
-            backgroundColor: '#999',
-          }}
-        />
-        <View style={{ width: '50%', flexDirection: 'row' }}>
-          <Text style={{ width: '20%', color: '#999', textAlign: 'center' }}>
-            R
-          </Text>
-          <Text style={{ width: '15%', color: '#999', textAlign: 'center' }}>
-            K
-          </Text>
-          <Text style={{ width: '15%', color: '#999', textAlign: 'center' }}>
-            D
-          </Text>
-          <Text style={{ width: '50%', color: '#999', textAlign: 'right' }}>
-            name
-          </Text>
-        </View>
-      </View>
+      <ScoreBlock />
+      <TeamHeader />
       <View
         style={{
           width: '100%',
@@ -361,20 +327,13 @@ export default function Main() {
         }}
       >
         <FlatList
-          style={{ width: '50%' }}
+          style={{ flex: 1 }}
           data={team1.players}
           renderItem={RenderPlayers1}
         />
-        <View
-          style={{
-            width: 1,
-            height: '100%',
-            backgroundColor: '#999',
-            marginHorizontal: 5,
-          }}
-        />
+        <View style={styles.separator} />
         <FlatList
-          style={{ width: '50%' }}
+          style={{ flex: 1 }}
           data={team2.players}
           renderItem={RenderPlayers2}
         />
@@ -386,12 +345,13 @@ export default function Main() {
           alignItems: 'center',
           justifyContent: 'center',
           paddingHorizontal: 10,
-          height: 20,
+          height: 10,
+          marginVertical: 5,
         }}
       >
         <View
           style={{
-            width: '50%',
+            flex: 1,
             height: '100%',
             borderRadius: 5,
             overflow: 'hidden',
@@ -406,17 +366,10 @@ export default function Main() {
             }}
           ></View>
         </View>
+        <View style={styles.separator} />
         <View
           style={{
-            width: 1,
-            height: '100%',
-            backgroundColor: '#999',
-            marginHorizontal: 5,
-          }}
-        />
-        <View
-          style={{
-            width: '50%',
+            flex: 1,
             height: '100%',
             borderRadius: 5,
             overflow: 'hidden',
@@ -482,7 +435,7 @@ export default function Main() {
           initialNumToRender={20}
           windowSize={10}
           data={[...log].reverse()}
-          renderItem={RenderLogs}
+          renderItem={(item: any) => <RenderLogs item={item.item} />}
           // keyExtractor={(item: any) => item.id}
         />
       </View>
@@ -491,21 +444,37 @@ export default function Main() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: '#fff',
+  userName: {
+    width: '50%',
+    fontSize: 18,
+    color: '#000',
+    paddingHorizontal: 5,
   },
-  teamName: {
-    fontSize: 20,
-    fontWeight: '500',
-    width: '40%',
+  userRating: {
+    fontSize: 12,
+    width: '20%',
+    color: '#000',
+    textAlign: 'center',
+    opacity: 0.5,
   },
-  score: {
-    fontSize: 24,
-    fontWeight: '500',
+  userKill: {
+    fontSize: 16,
+    width: '15%',
+    color: '#000',
+    textAlign: 'center',
+  },
+
+  userDeath: {
+    fontSize: 16,
+    width: '15%',
+    color: '#000',
+    textAlign: 'center',
+  },
+
+  separator: {
+    width: 1,
+    height: '100%',
+    backgroundColor: '#999',
+    marginHorizontal: 5,
   },
 })
