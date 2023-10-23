@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: colors.shadowBG,
     borderWidth: 1,
+    borderBottomWidth: 2,
     borderColor: colors.dead,
     padding: 5,
     borderRadius: 10,
@@ -96,5 +97,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     backgroundColor: colors.shadowBG,
     borderWidth: 1,
+    borderBottomWidth: 2,
   },
 })

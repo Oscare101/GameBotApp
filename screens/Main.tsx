@@ -33,11 +33,11 @@ const NOVA: Team = {
     motivation: 0.8,
     tactic: 0.7,
     players: [
-      { nickName: 'Oscare', rating: 1.55 },
+      { nickName: 'Oscare', rating: 1.58 },
       { nickName: 'Niko', rating: 1.42 },
       { nickName: 'Modest', rating: 1.36 },
-      { nickName: 'b1t', rating: 1.34 },
-      { nickName: 'Rain', rating: 1.28 },
+      { nickName: 'b1t', rating: 1.38 },
+      { nickName: 'Refresh', rating: 1.29 },
     ],
   },
 }
@@ -48,11 +48,11 @@ const Quazars: any = {
     motivation: 0.5,
     tactic: 0.6,
     players: [
-      { nickName: 'Header', rating: 1.48 },
+      { nickName: 'Header', rating: 1.47 },
       { nickName: 'Xantares', rating: 1.35 },
+      { nickName: 'Rain', rating: 1.28 },
       { nickName: 'Tabsen', rating: 1.2 },
       { nickName: 'Cloudy', rating: 1.2 },
-      { nickName: 'Kosus', rating: 1.18 },
     ],
   },
 }
@@ -63,11 +63,11 @@ const OG: any = {
     motivation: 0.5,
     tactic: 0.5,
     players: [
-      { nickName: 'Olaph', rating: 1.3 },
+      { nickName: 'Olaph', rating: 1.33 },
+      { nickName: 'Torin', rating: 1.23 },
       { nickName: 'Focus', rating: 1.2 },
       { nickName: 'Boros', rating: 1.2 },
-      { nickName: 'Torin', rating: 1.22 },
-      { nickName: 'Refresh', rating: 1.17 },
+      { nickName: 'Mandarin', rating: 1.17 },
     ],
   },
 }
@@ -76,21 +76,21 @@ const Vangard: any = {
   team: {
     name: 'Vangard',
     motivation: 0.5,
-    tactic: 0.5,
+    tactic: 0.4,
     players: [
-      { nickName: 'Fury', rating: 1.21 },
+      { nickName: 'Fury', rating: 1.25 },
+      { nickName: 'Maden', rating: 1.18 },
       { nickName: 'Leon', rating: 1.18 },
-      { nickName: 'Maden', rating: 1.17 },
+      { nickName: 'Kosus', rating: 1.18 },
       { nickName: 'Raven', rating: 1.17 },
-      { nickName: 'Gash', rating: 1.15 },
     ],
   },
 }
 
-const team1Grid = OG
+const team1Grid = NOVA
 const team2Grid = Quazars
 
-const delay: any = 10 // milliseconds for every action
+const delay: any = 100 // milliseconds for every action
 const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
@@ -114,78 +114,80 @@ export default function Main() {
         ) {
           setGameIsActive(false)
           clearInterval(intervalId)
-        } else if (
-          GetAlivePlayers(team1, log).length > 0 &&
-          GetAlivePlayers(team2, log).length > 0
-        ) {
-          const teamAttackQueue = RandomTeamToAttak(team1, team2)
-          const playerExecute = RandomPLayerToExecute(teamAttackQueue, log)
-
-          dispatch(
-            updateLog({
-              status: 'kill',
-              kill: {
-                nickName: playerExecute[0].nickName,
-                team: teamAttackQueue[0].name,
-              },
-              death: {
-                nickName: playerExecute[1].nickName,
-                team: teamAttackQueue[1].name,
-              },
-              tool: GetToolRandom(),
-              id: new Date().getTime().toString(),
-            })
-          )
         } else {
-          if (GetAlivePlayers(team1, log).length === 0) {
+          if (
+            GetAlivePlayers(team1, log).length > 0 &&
+            GetAlivePlayers(team2, log).length > 0
+          ) {
+            const teamAttackQueue = RandomTeamToAttak(team1, team2)
+            const playerExecute = RandomPLayerToExecute(teamAttackQueue, log)
+
             dispatch(
               updateLog({
-                status: 'win',
-                win: team2.name,
+                status: 'kill',
+                kill: {
+                  nickName: playerExecute[0].nickName,
+                  team: teamAttackQueue[0].name,
+                },
+                death: {
+                  nickName: playerExecute[1].nickName,
+                  team: teamAttackQueue[1].name,
+                },
+                tool: GetToolRandom(),
                 id: new Date().getTime().toString(),
               })
             )
-            let team1Value = team1
-            team1Value = {
-              ...team1Value,
-              economics: GetEconomics(team1.economics, false),
-            }
-            dispatch(updateTeam1(team1Value))
-            let team2Value = team2
-            team2Value = {
-              ...team2Value,
-              economics: GetEconomics(team2.economics, true),
-            }
-            dispatch(updateTeam2(team2Value))
           } else {
-            dispatch(
-              updateLog({
-                status: 'win',
-                win: team1.name,
-                id: new Date().getTime().toString(),
-              })
-            )
-            let team1Value = team1
-            team1Value = {
-              ...team1Value,
-              economics: GetEconomics(team1.economics, true),
+            if (GetAlivePlayers(team1, log).length === 0) {
+              dispatch(
+                updateLog({
+                  status: 'win',
+                  win: team2.name,
+                  id: new Date().getTime().toString(),
+                })
+              )
+              let team1Value = team1
+              team1Value = {
+                ...team1Value,
+                economics: GetEconomics(team1.economics, false),
+              }
+              dispatch(updateTeam1(team1Value))
+              let team2Value = team2
+              team2Value = {
+                ...team2Value,
+                economics: GetEconomics(team2.economics, true),
+              }
+              dispatch(updateTeam2(team2Value))
+            } else {
+              dispatch(
+                updateLog({
+                  status: 'win',
+                  win: team1.name,
+                  id: new Date().getTime().toString(),
+                })
+              )
+              let team1Value = team1
+              team1Value = {
+                ...team1Value,
+                economics: GetEconomics(team1.economics, true),
+              }
+              dispatch(updateTeam1(team1Value))
+              let team2Value = team2
+              team2Value = {
+                ...team2Value,
+                economics: GetEconomics(team2.economics, false),
+              }
+              dispatch(updateTeam2(team2Value))
             }
-            dispatch(updateTeam1(team1Value))
-            let team2Value = team2
-            team2Value = {
-              ...team2Value,
-              economics: GetEconomics(team2.economics, false),
-            }
-            dispatch(updateTeam2(team2Value))
+            // ClearDeath()
           }
-          // ClearDeath()
         }
       }, delay)
       return () => {
         clearInterval(intervalId)
       }
     }
-  }, [dispatch, gameIsActive, log, team1, team2])
+  }, [dispatch, gameIsActive, log])
 
   function ContinueGame() {
     let team1Value = team1
@@ -436,7 +438,6 @@ export default function Main() {
           windowSize={10}
           data={[...log].reverse()}
           renderItem={(item: any) => <RenderLogs item={item.item} />}
-          // keyExtractor={(item: any) => item.id}
         />
       </View>
     </View>
