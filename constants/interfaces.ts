@@ -17,4 +17,5 @@ export interface Log {
   death?: { team: string; nickName: string }
   tool?: string
   win?: string
+  id?: string
 }

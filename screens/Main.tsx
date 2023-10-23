@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   Animated,
   Easing,
@@ -15,7 +15,6 @@ import { updateTeam1 } from '../redux/team1'
 import { Team } from '../constants/interfaces'
 import { updateTeam2 } from '../redux/team2'
 import { clearLog, updateLog } from '../redux/logs'
-import { updateRound } from '../redux/round'
 import {
   GetAlivePlayers,
   GetDeadPlayerInRound,
@@ -26,7 +25,7 @@ import {
   RandomTeamToAttak,
 } from '../functions/functions'
 import colors from '../constants/colors'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import RenderLogs from '../components/RenderLog'
 
 const NOVA: Team = {
   team: {
@@ -34,11 +33,11 @@ const NOVA: Team = {
     motivation: 0.5,
     tactic: 0.7,
     players: [
-      { nickName: 'Oscare', rating: 1.45 },
+      { nickName: 'Oscare', rating: 1.55 },
+      { nickName: 'Niko', rating: 1.42 },
+      { nickName: 'Modest', rating: 1.36 },
       { nickName: 'b1t', rating: 1.34 },
       { nickName: 'Rain', rating: 1.28 },
-      { nickName: 'Modest', rating: 1.36 },
-      { nickName: 'Niko', rating: 1.38 },
     ],
   },
 }
@@ -49,11 +48,11 @@ const Quazars: any = {
     motivation: 0.5,
     tactic: 0.5,
     players: [
-      { nickName: 'Cloudy', rating: 1.2 },
-      { nickName: 'Xantares', rating: 1.3 },
-      { nickName: 'Header', rating: 1.37 },
-      { nickName: 'Kosus', rating: 1.18 },
+      { nickName: 'Header', rating: 1.48 },
+      { nickName: 'Xantares', rating: 1.35 },
       { nickName: 'Tabsen', rating: 1.2 },
+      { nickName: 'Cloudy', rating: 1.2 },
+      { nickName: 'Kosus', rating: 1.18 },
     ],
   },
 }
@@ -61,8 +60,9 @@ const Quazars: any = {
 const team1Grid = NOVA
 const team2Grid = Quazars
 
-const delay: any = 100 // if 0 - the instant result, if number - seconds of every round
-const MRNumber: number = 2 // best of x2 rounds, need number+1 won rounds to win the game
+const delay: any = 1000 // milliseconds for every action
+const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
+const additionalRounds = 3 // mr after draw
 
 const economicsRanges = [0.2, 0.4, 0.6, 0.8, 1]
 const economicsWin = [0.4, 0.3, 0.25, 0.2, 0.15]
@@ -72,7 +72,7 @@ export default function Main() {
   const team1 = useSelector((state: RootState) => state.team1.team)
   const team2 = useSelector((state: RootState) => state.team2.team)
   const log = useSelector((state: RootState) => state.log)
-  const round = useSelector((state: RootState) => state.round)
+  const [rounds, setRounds] = useState<number>(0)
 
   const dispatch = useDispatch()
 
@@ -82,9 +82,9 @@ export default function Main() {
     if (gameIsActive) {
       const intervalId = setInterval(async () => {
         if (
-          GetScore(team1, log) + GetScore(team2, log) === MRNumber * 2 ||
-          GetScore(team1, log) === MRNumber + 1 ||
-          GetScore(team2, log) === MRNumber + 1
+          GetScore(team1, log) + GetScore(team2, log) === rounds * 2 ||
+          GetScore(team1, log) === rounds + 1 ||
+          GetScore(team2, log) === rounds + 1
         ) {
           setGameIsActive(false)
           clearInterval(intervalId)
@@ -107,6 +107,7 @@ export default function Main() {
                 team: teamAttackQueue[1].name,
               },
               tool: GetToolRandom(),
+              id: new Date().getTime().toString(),
             })
           )
         } else {
@@ -115,6 +116,7 @@ export default function Main() {
               updateLog({
                 status: 'win',
                 win: team2.name,
+                id: new Date().getTime().toString(),
               })
             )
             let team1Value = team1
@@ -134,6 +136,7 @@ export default function Main() {
               updateLog({
                 status: 'win',
                 win: team1.name,
+                id: new Date().getTime().toString(),
               })
             )
             let team1Value = team1
@@ -158,7 +161,13 @@ export default function Main() {
     }
   }, [dispatch, gameIsActive, log])
 
+  function ContinueGame() {
+    setGameIsActive(true)
+    setRounds(rounds + additionalRounds)
+  }
+
   async function StartTheGame() {
+    setRounds(MRNumber)
     dispatch(clearLog())
     let team1Value = team1Grid.team
     team1Value.economics = 0.5
@@ -180,67 +189,6 @@ export default function Main() {
     }
     dispatch(updateTeam2(team2Value))
     setGameIsActive(true)
-  }
-
-  function RenderLogs({ item }: any) {
-    return (
-      <>
-        {item.status === 'kill' ? (
-          <View style={styles.killLog}>
-            <Text
-              style={[
-                styles.playerKill,
-                {
-                  color:
-                    item.kill.team === team1.name
-                      ? colors.team1NameColor
-                      : colors.team2NameColor,
-                },
-              ]}
-            >
-              {item.kill.nickName}
-            </Text>
-            <MaterialCommunityIcons name={item.tool} size={24} color="black" />
-            <Text
-              style={[
-                styles.playerDead,
-                {
-                  color: colors.dead,
-                },
-              ]}
-            >
-              {item.death.nickName}
-            </Text>
-          </View>
-        ) : (
-          <View
-            style={[
-              styles.winLog,
-              {
-                borderColor:
-                  item.win === team1.name
-                    ? colors.team1NameColor
-                    : colors.team2NameColor,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.playerKill,
-                {
-                  color:
-                    item.win === team1.name
-                      ? colors.team1NameColor
-                      : colors.team2NameColor,
-                },
-              ]}
-            >
-              {item.win}
-            </Text>
-          </View>
-        )}
-      </>
-    )
   }
 
   function RenderPlayers1({ item }: any) {
@@ -491,22 +439,52 @@ export default function Main() {
         {gameIsActive ? (
           <></>
         ) : (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={StartTheGame}
-            style={{
-              width: '95%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 10,
-              backgroundColor: '#666',
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ fontSize: 28, color: '#fff' }}>Start The Game</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={StartTheGame}
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 10,
+                backgroundColor: '#666',
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ fontSize: 28, color: '#fff' }}>
+                Start The Game
+              </Text>
+            </TouchableOpacity>
+            {log.length > 0 && GetScore(team1, log) === GetScore(team2, log) ? (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={ContinueGame}
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 10,
+                  backgroundColor: '#666',
+                  borderRadius: 10,
+                  marginLeft: 10,
+                }}
+              >
+                <Text style={{ fontSize: 28, color: '#fff' }}>Additional</Text>
+              </TouchableOpacity>
+            ) : (
+              <></>
+            )}
+          </View>
         )}
-        <FlatList data={[...log].reverse()} renderItem={RenderLogs} />
+        <FlatList
+          removeClippedSubviews={true}
+          initialNumToRender={20}
+          windowSize={10}
+          data={[...log].reverse()}
+          renderItem={RenderLogs}
+          // keyExtractor={(item: any) => item.id}
+        />
       </View>
     </View>
   )
@@ -529,34 +507,5 @@ const styles = StyleSheet.create({
   score: {
     fontSize: 24,
     fontWeight: '500',
-  },
-  killLog: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-end',
-    backgroundColor: colors.shadowBG,
-    borderWidth: 1,
-    borderColor: colors.dead,
-    padding: 5,
-    borderRadius: 10,
-    marginTop: 5,
-  },
-  playerKill: {
-    fontSize: 18,
-    marginRight: 10,
-  },
-  playerDead: {
-    fontSize: 18,
-    marginLeft: 10,
-  },
-  winLog: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 5,
-    borderRadius: 10,
-    marginTop: 5,
-    backgroundColor: colors.shadowBG,
-    borderWidth: 1,
   },
 })
