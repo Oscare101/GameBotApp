@@ -61,8 +61,8 @@ const Quazars: any = {
 const team1Grid = NOVA
 const team2Grid = Quazars
 
-const delay: any = 1000 // if 0 - the instant result, if number - seconds of every round
-const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
+const delay: any = 100 // if 0 - the instant result, if number - seconds of every round
+const MRNumber: number = 2 // best of x2 rounds, need number+1 won rounds to win the game
 
 const economicsRanges = [0.2, 0.4, 0.6, 0.8, 1]
 const economicsWin = [0.4, 0.3, 0.25, 0.2, 0.15]
@@ -88,8 +88,7 @@ export default function Main() {
         ) {
           setGameIsActive(false)
           clearInterval(intervalId)
-        }
-        if (
+        } else if (
           GetAlivePlayers(team1, log).length > 0 &&
           GetAlivePlayers(team2, log).length > 0
         ) {
@@ -193,7 +192,7 @@ export default function Main() {
                 styles.playerKill,
                 {
                   color:
-                    item.death.team === team1.name
+                    item.kill.team === team1.name
                       ? colors.team1NameColor
                       : colors.team2NameColor,
                 },
