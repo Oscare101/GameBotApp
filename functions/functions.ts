@@ -118,6 +118,10 @@ export function GetScore(team: any, log: any) {
   return scores.filter((i: any) => i.win === team.name).length
 }
 
+export function GetMapsScore(team: any, mapPoints: any) {
+  return mapPoints.filter((mapWinner: any) => mapWinner === team.name).length
+}
+
 export function GetEconomics(economics: any, win: boolean) {
   const economicsRanges = [0.2, 0.4, 0.6, 0.8, 1]
   const economicsWin = [0.4, 0.3, 0.25, 0.2, 0.15]
