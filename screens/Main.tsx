@@ -110,7 +110,7 @@ const team2Grid = Quazars
 const delay: any = 10 // milliseconds for every action
 const showLogs: boolean = false
 const bestOf: number = 3
-const MRNumber: number = 5 // best of x2 rounds, need number+1 won rounds to win the game
+const MRNumber: number = 3 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
 export default function Main() {
@@ -274,6 +274,7 @@ export default function Main() {
 
   async function StartTheGame() {
     setRounds(MRNumber)
+
     dispatch(clearLog())
     dispatch(clearMapPoints())
 
@@ -382,7 +383,7 @@ export default function Main() {
       }}
     >
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
-      <ScoreBlock />
+      <ScoreBlock bestOf={bestOf} rounds={rounds} MRNumber={MRNumber} />
       <TeamHeader />
       <View
         style={{
