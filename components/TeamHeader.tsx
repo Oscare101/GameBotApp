@@ -14,7 +14,7 @@ export default function TeamHeader() {
         <Text style={styles.miniTitle15}>K</Text>
         <Text style={styles.miniTitle15}>D</Text>
         <Text style={styles.miniTitle20}>R</Text>
-        <Text style={[styles.miniTitleName, { textAlign: 'left' }]}>name</Text>
+        <Text style={[styles.miniTitleName, { textAlign: 'right' }]}>name</Text>
       </View>
     </View>
   )
@@ -22,11 +22,11 @@ export default function TeamHeader() {
 
 const styles = StyleSheet.create({
   viewCenter: {
-    width: '100%',
+    // width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    margin: 10,
   },
   miniTitleName: { width: '50%', color: '#999', textAlign: 'left' },
   miniTitle15: { width: '15%', color: '#999', textAlign: 'center' },

@@ -104,13 +104,13 @@ const other: any = {
   },
 }
 
-const team1Grid = OG
-const team2Grid = Quazars
+const team1Grid = NOVA
+const team2Grid = OG
 
 const delay: any = 10 // milliseconds for every action
 const showLogs: boolean = false
 const bestOf: number = 3
-const MRNumber: number = 3 // best of x2 rounds, need number+1 won rounds to win the game
+const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
 export default function Main() {
@@ -273,11 +273,18 @@ export default function Main() {
   }
 
   async function StartTheGame() {
-    setRounds(MRNumber)
+    SetTeams()
+    if (team1.name && team2.name) {
+      setRounds(MRNumber)
 
-    dispatch(clearLog())
-    dispatch(clearMapPoints())
+      dispatch(clearLog())
+      dispatch(clearMapPoints())
 
+      setGameIsActive(true)
+    }
+  }
+
+  async function SetTeams() {
     let team1Value = team1Grid.team
     team1Value.economics = 0.5
     dispatch(updateTeam1(team1Value))
@@ -285,7 +292,6 @@ export default function Main() {
     let team2Value = team2Grid.team
     team2Value.economics = 0.5
     dispatch(updateTeam2(team2Value))
-    setGameIsActive(true)
   }
 
   function RenderPlayers1({ item }: any) {
