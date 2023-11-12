@@ -28,6 +28,7 @@ import RenderLogs from '../components/RenderLog'
 import TeamHeader from '../components/TeamHeader'
 import ScoreBlock from '../components/ScoreBlock'
 import mapPoints, { clearMapPoints, updateMapPoints } from '../redux/mapPoints'
+import RenderRounds from '../components/RenderRounds'
 
 const NOVA: Team = {
   team: {
@@ -39,7 +40,7 @@ const NOVA: Team = {
       { nickName: 'Modest', rating: 1.44 },
       { nickName: 'Niko', rating: 1.43 },
       { nickName: 'b1t', rating: 1.39 },
-      { nickName: 'Refresh', rating: 1.3 },
+      { nickName: 'Refresh', rating: 1.33 },
     ],
   },
 }
@@ -105,10 +106,11 @@ const other: any = {
 }
 
 const team1Grid = NOVA
-const team2Grid = OG
+const team2Grid = Quazars
 
 const delay: any = 10 // milliseconds for every action
 const showLogs: boolean = false
+const showRounds: boolean = false
 const bestOf: number = 3
 const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
@@ -282,6 +284,25 @@ export default function Main() {
 
       setGameIsActive(true)
     }
+  }
+
+  async function ClearGame() {
+    setRounds(MRNumber)
+
+    dispatch(clearLog())
+    dispatch(clearMapPoints())
+
+    let team1Value = {
+      name: '',
+      players: [{ nickName: '-', rating: 0 }],
+    }
+    dispatch(updateTeam1(team1Value))
+
+    let team2Value = {
+      name: '',
+      players: [{ nickName: '-', rating: 0 }],
+    }
+    dispatch(updateTeam2(team2Value))
   }
 
   async function SetTeams() {
@@ -469,7 +490,7 @@ export default function Main() {
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={StartTheGame}
+              onPress={log.length ? ClearGame : StartTheGame}
               style={{
                 flex: 1,
                 alignItems: 'center',
@@ -480,7 +501,11 @@ export default function Main() {
               }}
             >
               <Text style={{ fontSize: 28, color: '#fff' }}>
-                Start The Game
+                {log.length
+                  ? 'Clear'
+                  : team1.name
+                  ? 'Start The Game'
+                  : 'Set teams'}
               </Text>
             </TouchableOpacity>
             {/* {log.length > 0 && GetScore(team1, log) === GetScore(team2, log) ? (
@@ -515,6 +540,7 @@ export default function Main() {
         ) : (
           <></>
         )}
+        <RenderRounds showRounds={showRounds} />
       </View>
     </View>
   )
