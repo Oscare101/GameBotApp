@@ -1,3 +1,11 @@
+export interface Player {
+  name: string
+  rating: number
+  experience: number
+  role: 'free' | 'capitan' | 'fragger' | 'support' | 'lurker'
+  team: string
+}
+
 export interface Team {
   team: {
     name: string
