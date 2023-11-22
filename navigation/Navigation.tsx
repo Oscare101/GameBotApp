@@ -8,6 +8,7 @@ import { TouchableOpacity, View, useColorScheme } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import PlayersScreen from '../screens/PlayersScreen'
 import Main from '../screens/Main'
+import TournamentsScreen from '../screens/TournamentsScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -33,6 +34,17 @@ export default function Navigation() {
         action: () => {
           navigation.navigate('MainNavigation', {
             screen: 'MainScreen',
+            initial: false,
+          })
+        },
+      },
+      {
+        title: '',
+        iconActive: 'rocket',
+        iconInactive: 'rocket-outline',
+        action: () => {
+          navigation.navigate('TournamentsNavigation', {
+            screen: 'TournamentsScreen',
             initial: false,
           })
         },
@@ -78,6 +90,20 @@ export default function Navigation() {
     )
   }
 
+  function TournamentsNavigation() {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="TournamentsScreen"
+          component={TournamentsScreen}
+        />
+      </Stack.Navigator>
+    )
+  }
+
   function MainNavigation() {
     return (
       <Stack.Navigator>
@@ -119,6 +145,13 @@ export default function Navigation() {
         <Tab.Screen
           name="MainNavigation"
           component={MainNavigation}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="TournamentsNavigation"
+          component={TournamentsNavigation}
           options={{
             headerShown: false,
           }}
