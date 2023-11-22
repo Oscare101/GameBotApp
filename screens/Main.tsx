@@ -20,6 +20,7 @@ import {
   GetMapsScore,
   GetScore,
   GetToolRandom,
+  InstantGame,
   RandomPLayerToExecute,
   RandomTeamToAttak,
 } from '../functions/functions'
@@ -529,6 +530,33 @@ export default function Main() {
             )} */}
           </View>
         )}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={
+            () => {
+              const winnersArr = InstantGame(
+                NOVA.team,
+                OG.team,
+                bestOf,
+                MRNumber,
+                additionalRounds
+              )
+            }
+            // TODO FIX this shit
+          }
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10,
+            backgroundColor: '#f0f',
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 28, color: '#fff' }}>
+            {log.length ? 'Clear' : team1.name ? 'Start The Game' : 'Set teams'}
+          </Text>
+        </TouchableOpacity>
         {showLogs ? (
           <FlatList
             removeClippedSubviews={true}

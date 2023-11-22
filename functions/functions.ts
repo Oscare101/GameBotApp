@@ -143,3 +143,84 @@ export function GetEconomics(economics: any, win: boolean) {
 
   return +eco.toFixed(2)
 }
+
+export function InstantGame(
+  team1: any,
+  team2: any,
+  bestOf: number,
+  MRNumber: number,
+  additionalNumber: number
+) {
+  team1.economics = 0.5
+  team2.economics = 0.5
+  let winnersArr: any = []
+
+  let logs: any = []
+  let rounds: number = MRNumber
+  while (true) {
+    if (
+      GetScore(team1, logs) + GetScore(team2, logs) === rounds * 2 ||
+      GetScore(team1, logs) === rounds + 1 ||
+      GetScore(team2, logs) === rounds + 1
+    ) {
+      if (GetScore(team1, logs) !== GetScore(team2, logs)) {
+        if (GetScore(team1, logs) === rounds + 1) {
+          winnersArr.push(team1.name)
+        } else {
+          winnersArr.push(team2.name)
+        }
+        logs = []
+      } else {
+        rounds += additionalNumber * 2
+      }
+
+      if (
+        GetMapsScore(team1, winnersArr) === Math.floor(bestOf / 2 + 1) ||
+        GetMapsScore(team2, winnersArr) === Math.floor(bestOf / 2 + 1)
+      ) {
+        break
+      }
+    } else {
+      if (
+        GetAlivePlayers(team1, logs).length > 0 &&
+        GetAlivePlayers(team2, logs).length > 0
+      ) {
+        const teamAttackQueue = RandomTeamToAttak(team1, team2)
+        const playerExecute = RandomPLayerToExecute(teamAttackQueue, logs)
+
+        logs.push({
+          status: 'kill',
+          kill: {
+            nickName: playerExecute[0].nickName,
+            team: teamAttackQueue[0].name,
+          },
+          death: {
+            nickName: playerExecute[1].nickName,
+            team: teamAttackQueue[1].name,
+          },
+          tool: GetToolRandom(),
+          id: new Date().getTime().toString(),
+        })
+      } else {
+        if (GetAlivePlayers(team1, logs).length === 0) {
+          logs.push({
+            status: 'win',
+            win: team2.name,
+            id: new Date().getTime().toString(),
+          })
+          team1.economics = GetEconomics(team1.economics, false)
+          team2.economics = GetEconomics(team1.economics, true)
+        } else {
+          logs.push({
+            status: 'win',
+            win: team1.name,
+            id: new Date().getTime().toString(),
+          })
+          team1.economics = GetEconomics(team1.economics, true)
+          team2.economics = GetEconomics(team1.economics, false)
+        }
+      }
+    }
+  }
+  return winnersArr
+}
