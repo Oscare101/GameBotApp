@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 import PlayersScreen from '../screens/PlayersScreen'
 import Main from '../screens/Main'
 import TournamentsScreen from '../screens/TournamentsScreen'
+import TournamentInfoScreen from '../screens/TournamentInfoScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -99,6 +100,16 @@ export default function Navigation() {
           }}
           name="TournamentsScreen"
           component={TournamentsScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            gestureDirection: 'horizontal',
+            gestureEnabled: true,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+          name="TournamentInfoScreen"
+          component={TournamentInfoScreen}
         />
       </Stack.Navigator>
     )
