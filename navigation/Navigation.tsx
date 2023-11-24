@@ -10,6 +10,7 @@ import PlayersScreen from '../screens/PlayersScreen'
 import Main from '../screens/Main'
 import TournamentsScreen from '../screens/TournamentsScreen'
 import TournamentInfoScreen from '../screens/TournamentInfoScreen'
+import LaunchScreen from '../screens/LaunchScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -173,6 +174,14 @@ export default function Navigation() {
 
   const navigationLogIn = (
     <Stack.Navigator initialRouteName="LaunchScreen">
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          headerLeft: () => null,
+        }}
+        name="LaunchScreen"
+        component={LaunchScreen}
+      />
       <Stack.Screen
         options={{
           headerShown: false,

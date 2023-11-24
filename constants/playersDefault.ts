@@ -1,12 +1,14 @@
 import { Player } from './interfaces'
 
-const players: Player[] = [
+const playersDefault: Player[] = [
   {
     nickName: 'Oscare',
     rating: 1.75,
     team: 'NOVA',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Header',
@@ -14,6 +16,8 @@ const players: Player[] = [
     team: 'Quazars',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Modest',
@@ -21,6 +25,8 @@ const players: Player[] = [
     team: 'NOVA',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Olaph',
@@ -28,6 +34,8 @@ const players: Player[] = [
     team: 'OG',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Niko',
@@ -35,6 +43,8 @@ const players: Player[] = [
     team: 'NOVA',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'bait',
@@ -42,6 +52,8 @@ const players: Player[] = [
     team: 'NOVA',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Xantares',
@@ -49,6 +61,8 @@ const players: Player[] = [
     team: 'Quazars',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Collector',
@@ -56,6 +70,8 @@ const players: Player[] = [
     team: 'Vangard',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Nelo',
@@ -63,6 +79,8 @@ const players: Player[] = [
     team: 'OG',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Refresh',
@@ -70,6 +88,8 @@ const players: Player[] = [
     team: 'NOVA',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Rossander',
@@ -77,6 +97,8 @@ const players: Player[] = [
     team: 'OG',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Rain',
@@ -84,6 +106,8 @@ const players: Player[] = [
     team: 'Quazars',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Focus',
@@ -91,6 +115,8 @@ const players: Player[] = [
     team: 'OG',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Salivan',
@@ -98,6 +124,8 @@ const players: Player[] = [
     team: 'Island',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Fury',
@@ -105,6 +133,8 @@ const players: Player[] = [
     team: 'Vangard',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Kscerato',
@@ -112,6 +142,8 @@ const players: Player[] = [
     team: 'Vangard',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Torin',
@@ -119,6 +151,8 @@ const players: Player[] = [
     team: 'OG',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Tenor',
@@ -126,6 +160,8 @@ const players: Player[] = [
     team: 'Vangard',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Wong',
@@ -133,6 +169,8 @@ const players: Player[] = [
     team: 'Island',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Cicada',
@@ -140,6 +178,8 @@ const players: Player[] = [
     team: 'Solid',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Stoic',
@@ -147,6 +187,8 @@ const players: Player[] = [
     team: 'Vangard',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Syrson',
@@ -154,6 +196,8 @@ const players: Player[] = [
     team: 'Island',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'LoseIt',
@@ -161,6 +205,8 @@ const players: Player[] = [
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Tabsen',
@@ -168,13 +214,17 @@ const players: Player[] = [
     team: 'Quazars',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Cloudy',
     rating: 1.2,
     team: 'Quazars',
     experience: 0,
-    role: 'Lurker',
+    role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Boros',
@@ -182,6 +232,8 @@ const players: Player[] = [
     team: 'Island',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Kipito',
@@ -189,6 +241,8 @@ const players: Player[] = [
     team: 'TopGun',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Leon',
@@ -196,6 +250,8 @@ const players: Player[] = [
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Kosus',
@@ -203,6 +259,8 @@ const players: Player[] = [
     team: 'TopGun',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Maden',
@@ -210,6 +268,8 @@ const players: Player[] = [
     team: 'TopGun',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Mandarin',
@@ -217,6 +277,8 @@ const players: Player[] = [
     team: 'Solid',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Raven',
@@ -224,6 +286,8 @@ const players: Player[] = [
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Faker',
@@ -231,6 +295,8 @@ const players: Player[] = [
     team: 'TopGun',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Soul',
@@ -238,6 +304,8 @@ const players: Player[] = [
     team: 'TopGun',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Faris',
@@ -245,6 +313,8 @@ const players: Player[] = [
     team: 'Solid',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Melon',
@@ -252,6 +322,8 @@ const players: Player[] = [
     team: 'Island',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Forest',
@@ -259,6 +331,8 @@ const players: Player[] = [
     team: 'Jupiter',
     experience: 0,
     role: 'Capitan',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'LoseIt',
@@ -266,6 +340,8 @@ const players: Player[] = [
     team: 'Solid',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Somewhere',
@@ -273,6 +349,8 @@ const players: Player[] = [
     team: 'Solid',
     experience: 0,
     role: 'Fragger',
+    motivation: 0,
+    tactic: 0,
   },
   {
     nickName: 'Tabar',
@@ -280,7 +358,9 @@ const players: Player[] = [
     team: 'Jupiter',
     experience: 0,
     role: 'Support',
+    motivation: 0,
+    tactic: 0,
   },
 ]
 
-export default players
+export default playersDefault

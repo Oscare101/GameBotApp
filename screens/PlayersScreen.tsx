@@ -8,13 +8,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import players from '../constants/players'
 import { Ionicons } from '@expo/vector-icons'
 import Teams from '../components/Teams'
 import TeamsBig from '../components/TeamBig'
+import { useSelector } from 'react-redux'
+import { RootState } from '../redux'
 
 export default function PlayersScreen() {
+  const players = useSelector((state: RootState) => state.players)
+
   const [modalPLayer, setModalPLayer] = useState<any>('')
+  const [teamInfo, setTeamInfo] = useState<boolean>(false)
 
   function RenderPlayer({ item, index }: any) {
     return (
@@ -41,9 +45,7 @@ export default function PlayersScreen() {
   function PlayerPriceKoef(rating: number) {
     const topPercent =
       (players.length -
-        players
-          .sort((a, b) => b.rating - a.rating)
-          .findIndex((i: any) => i.rating === rating)) /
+        GetSortedPlayersByRating().findIndex((i: any) => i.rating === rating)) /
       players.length
 
     return 1 + 4 * topPercent
@@ -51,12 +53,160 @@ export default function PlayersScreen() {
 
   function PlayerPriceAmount(rating: number) {
     const price =
-      (rating -
-        players.sort((a, b) => b.rating - a.rating)[players.length - 1].rating *
-          0.8) *
+      (rating - GetSortedPlayersByRating()[players.length - 1].rating * 0.8) *
       500000
 
     return price
+  }
+
+  function GetSortedPlayersByRating() {
+    let arr: any = []
+    players.forEach((i: any) => {
+      arr.push(i)
+    })
+    arr.sort((a: any, b: any) => b.rating - a.rating)
+    return arr
+  }
+
+  function RenderPlayersTeam({ item, index }: any) {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => {
+          setModalPLayer(item)
+          setTeamInfo(false)
+        }}
+        style={[
+          styles.playerBlock,
+          { backgroundColor: index % 2 === 0 ? '#fff' : '#eee' },
+        ]}
+      >
+        <Text style={styles.playerPosition}>{index + 1}</Text>
+        <Text style={styles.playerName}>{item.nickName}</Text>
+        <Text style={styles.playerRating}>{item.rating}</Text>
+        <Text style={styles.playerRole}>{item.role}</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  function PlayerInfo() {
+    return (
+      <>
+        <TouchableOpacity
+          style={styles.exitButton}
+          activeOpacity={0.8}
+          onPress={() => setModalPLayer(false)}
+        >
+          <Ionicons name="close-outline" size={36} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.modalPlayerName}>{modalPLayer.nickName}</Text>
+        <TeamsBig team={modalPLayer.team} />
+        <View
+          style={{
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start',
+            width: '92%',
+            marginTop: 10,
+          }}
+        >
+          <Text style={styles.modalPlayerInfo}>
+            Team: {modalPLayer.team}{' '}
+            <Ionicons
+              name="open-outline"
+              size={24}
+              color="black"
+              onPress={() => setTeamInfo(true)}
+            />
+          </Text>
+          <Text style={styles.modalPlayerInfo}>
+            Rating: {modalPLayer.rating}
+          </Text>
+          <View
+            style={{
+              height: 10,
+              width: 110,
+              backgroundColor: '#eee',
+              flexDirection: 'row',
+              marginVertical: 10,
+            }}
+          >
+            <View
+              style={{
+                height: '100%',
+                width: '33.33%',
+                backgroundColor: '#d94848',
+              }}
+            />
+            <View
+              style={{
+                height: '100%',
+                width: '33.33%',
+                backgroundColor: '#e8e05f',
+              }}
+            />
+            <View
+              style={{
+                height: '100%',
+                width: '33.33%',
+                backgroundColor: '#45c454',
+              }}
+            />
+            <View
+              style={{
+                height: 30,
+                width: 10,
+                top: -10,
+                // TODO FIX THIS SHIT
+                left:
+                  (100 *
+                    (players.length -
+                      GetSortedPlayersByRating().findIndex(
+                        (i: any) => i.rating === modalPLayer.rating
+                      ))) /
+                  players.length,
+                backgroundColor: '#00000066',
+                position: 'absolute',
+              }}
+            />
+          </View>
+          <Text style={styles.modalPlayerInfo}>Role: {modalPLayer.role}</Text>
+          <Text style={styles.modalPlayerInfo}>
+            Price:{' '}
+            {(
+              PlayerPriceAmount(modalPLayer.rating) *
+              PlayerPriceKoef(modalPLayer.rating)
+            )
+              .toFixed()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
+            $
+          </Text>
+        </View>
+      </>
+    )
+  }
+
+  function TeamInfo() {
+    return (
+      <>
+        <TouchableOpacity
+          style={styles.backButton}
+          activeOpacity={0.8}
+          onPress={() => setTeamInfo(false)}
+        >
+          <Ionicons name="chevron-back" size={36} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.modalPlayerName}>{modalPLayer.nickName}</Text>
+        <TeamsBig team={modalPLayer.team} />
+        <FlatList
+          style={{ width: '92%', marginTop: 10 }}
+          data={GetSortedPlayersByRating().filter(
+            (player: any) => player.team === modalPLayer.team
+          )}
+          renderItem={RenderPlayersTeam}
+        />
+      </>
+    )
   }
 
   return (
@@ -71,104 +221,25 @@ export default function PlayersScreen() {
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
       <FlatList
         style={{ width: '92%' }}
-        data={players.sort((a, b) => b.rating - a.rating)}
+        data={GetSortedPlayersByRating()}
         renderItem={RenderPlayer}
         showsVerticalScrollIndicator={false}
       />
       <Modal
-        visible={modalPLayer && !!modalPLayer.name}
+        visible={modalPLayer && !!modalPLayer.nickName}
         transparent
         style={styles.modal}
       >
-        <View style={styles.modalView}>
+        <View
+          // activeOpacity={1}
+          // onPress={() => {
+          //   setTeamInfo(false)
+          //   setModalPLayer(false)
+          // }}
+          style={styles.modalView}
+        >
           <View style={styles.modalBlock}>
-            <TouchableOpacity
-              style={styles.exitButton}
-              activeOpacity={0.8}
-              onPress={() => setModalPLayer(false)}
-            >
-              <Ionicons name="close-outline" size={36} color="black" />
-            </TouchableOpacity>
-            <Text style={styles.modalPlayerName}>{modalPLayer.name}</Text>
-            <TeamsBig team={modalPLayer.team} />
-            <View
-              style={{
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-                width: '92%',
-              }}
-            >
-              <Text style={styles.modalPlayerInfo}>
-                Team: {modalPLayer.team}
-              </Text>
-              <Text style={styles.modalPlayerInfo}>
-                Rating: {modalPLayer.rating}
-              </Text>
-              <View
-                style={{
-                  height: 10,
-                  width: 110,
-                  backgroundColor: '#eee',
-                  flexDirection: 'row',
-                  marginVertical: 10,
-                }}
-              >
-                <View
-                  style={{
-                    height: '100%',
-                    width: '33.33%',
-                    backgroundColor: '#d94848',
-                  }}
-                />
-                <View
-                  style={{
-                    height: '100%',
-                    width: '33.33%',
-                    backgroundColor: '#e8e05f',
-                  }}
-                />
-                <View
-                  style={{
-                    height: '100%',
-                    width: '33.33%',
-                    backgroundColor: '#45c454',
-                  }}
-                />
-                <View
-                  style={{
-                    height: 30,
-                    width: 10,
-                    top: -10,
-                    // TODO FIX THIS SHIT
-                    left:
-                      (100 *
-                        (players.length -
-                          players
-                            .sort((a, b) => b.rating - a.rating)
-                            .findIndex(
-                              (i: any) => i.rating === modalPLayer.rating
-                            ))) /
-                      players.length,
-                    backgroundColor: '#00000066',
-                    position: 'absolute',
-                  }}
-                />
-              </View>
-              <Text style={styles.modalPlayerInfo}>
-                Role: {modalPLayer.role}
-              </Text>
-              <Text style={styles.modalPlayerInfo}>
-                Price:{' '}
-                {(
-                  PlayerPriceAmount(modalPLayer.rating) *
-                  PlayerPriceKoef(modalPLayer.rating)
-                )
-                  .toFixed()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-                $
-              </Text>
-            </View>
+            {teamInfo ? <TeamInfo /> : <PlayerInfo />}
           </View>
         </View>
       </Modal>
@@ -204,15 +275,24 @@ const styles = StyleSheet.create({
   modalBlock: {
     backgroundColor: '#fff',
     width: '80%',
-    height: '50%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
+    paddingVertical: '10%',
   },
   exitButton: {
     position: 'absolute',
     top: 20,
     right: 20,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
     height: 40,
     width: 40,
     alignItems: 'center',

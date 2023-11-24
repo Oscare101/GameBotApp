@@ -11,7 +11,6 @@ import { GetMapsScore, GetScore } from '../functions/functions'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
 import { useState } from 'react'
-import players from '../constants/players'
 import Teams from './Teams'
 import { updateTeam1 } from '../redux/team1'
 import { Player, Team } from '../constants/interfaces'
@@ -21,6 +20,8 @@ export default function ScoreBlock(props: any) {
   const team1 = useSelector((state: RootState) => state.team1.team)
   const team2 = useSelector((state: RootState) => state.team2.team)
   const log = useSelector((state: RootState) => state.log)
+  const players = useSelector((state: RootState) => state.players)
+
   const mapPoints = useSelector((state: RootState) => state.mapPoints)
   const dispatch = useDispatch()
   const [team1Modal, setTeam1Modal] = useState<boolean>(false)
@@ -50,8 +51,18 @@ export default function ScoreBlock(props: any) {
           const t: Team = {
             team: {
               name: item as string,
-              motivation: 0.5,
-              tactic: 0.5,
+              motivation:
+                players
+                  .filter((player: any) => player.team === item)
+                  .reduce((a, b) => a + b.motivation, 0) / 5,
+              tactic:
+                players
+                  .filter((player: any) => player.team === item)
+                  .reduce((a, b) => a + b.tactic, 0) / 5,
+              experience:
+                players
+                  .filter((player: any) => player.team === item)
+                  .reduce((a, b) => a + b.experience, 0) / 5,
               economics: 0.5,
               players: players.filter((player: any) => player.team === item),
             },
@@ -144,7 +155,7 @@ export default function ScoreBlock(props: any) {
                 }}
               >
                 <FlatList
-                  data={GetTeams()}
+                  data={GetTeams().filter((team: any) => team !== team2.name)}
                   renderItem={RenderTeams}
                   ItemSeparatorComponent={() => (
                     <View
@@ -328,7 +339,7 @@ export default function ScoreBlock(props: any) {
                 }}
               >
                 <FlatList
-                  data={GetTeams()}
+                  data={GetTeams().filter((team: any) => team !== team1.name)}
                   renderItem={RenderTeams}
                   ItemSeparatorComponent={() => (
                     <View

@@ -4,6 +4,8 @@ export interface Player {
   experience: number
   role: 'Free' | 'Capitan' | 'Fragger' | 'Support' | 'Lurker'
   team: string
+  motivation: number
+  tactic: number
 }
 
 export interface Team {
@@ -12,6 +14,7 @@ export interface Team {
     motivation?: number
     tactic?: number
     economics?: number
+    experience?: number
     players: {
       nickName: string
       rating: number

@@ -30,6 +30,8 @@ import TeamHeader from '../components/TeamHeader'
 import ScoreBlock from '../components/ScoreBlock'
 import mapPoints, { clearMapPoints, updateMapPoints } from '../redux/mapPoints'
 import RenderRounds from '../components/RenderRounds'
+import { updatePlayers } from '../redux/players'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const NOVA: Team = {
   team: {
@@ -112,8 +114,8 @@ const team2Grid = Quazars
 const delay: any = 10 // milliseconds for every action
 const showLogs: boolean = false
 const showRounds: boolean = false
-const bestOf: number = 3
-const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
+const bestOf: number = 1
+const MRNumber: number = 3 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
 export default function Main() {
@@ -121,12 +123,22 @@ export default function Main() {
   const team2 = useSelector((state: RootState) => state.team2.team)
   const log = useSelector((state: RootState) => state.log)
   const mapPoints = useSelector((state: RootState) => state.mapPoints)
+  const players = useSelector((state: RootState) => state.players)
 
   const [rounds, setRounds] = useState<number>(0)
 
   const dispatch = useDispatch()
 
   const [gameIsActive, setGameIsActive] = useState<boolean>(false)
+
+  function GetSortedPlayersByRating() {
+    let arr: any = []
+    players.forEach((i: any) => {
+      arr.push(i)
+    })
+    arr.sort((a: any, b: any) => b.rating - a.rating)
+    return arr
+  }
 
   useEffect(() => {
     if (gameIsActive) {
@@ -156,6 +168,40 @@ export default function Main() {
             ) {
               setGameIsActive(false)
               clearInterval(intervalId)
+              if (
+                GetMapsScore(team1, winnersArr) >
+                GetMapsScore(team2, winnersArr)
+              ) {
+                const newPlayersArr = GetSortedPlayersByRating().map(
+                  (i: any) => {
+                    if (i.team === team1.name) {
+                      return { ...i, tactic: i.tactic + 0.01 }
+                    } else {
+                      return i
+                    }
+                  }
+                )
+                dispatch(updatePlayers(newPlayersArr))
+                await AsyncStorage.setItem(
+                  'players',
+                  JSON.stringify(newPlayersArr)
+                )
+              } else {
+                const newPlayersArr = GetSortedPlayersByRating().map(
+                  (i: any) => {
+                    if (i.team === team2.name) {
+                      return { ...i, tactic: i.tactic + 0.01 }
+                    } else {
+                      return i
+                    }
+                  }
+                )
+                dispatch(updatePlayers(newPlayersArr))
+                await AsyncStorage.setItem(
+                  'players',
+                  JSON.stringify(newPlayersArr)
+                )
+              }
             } else {
               StartTheNewMap()
             }
