@@ -2,7 +2,7 @@ export interface Player {
   name: string
   rating: number
   experience: number
-  role: 'free' | 'capitan' | 'fragger' | 'support' | 'lurker'
+  role: 'Free' | 'Capitan' | 'Fragger' | 'Support' | 'Lurker'
   team: string
 }
 

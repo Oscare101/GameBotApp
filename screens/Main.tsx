@@ -530,7 +530,7 @@ export default function Main() {
             )} */}
           </View>
         )}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           onPress={
             () => {
@@ -556,7 +556,7 @@ export default function Main() {
           <Text style={{ fontSize: 28, color: '#fff' }}>
             {log.length ? 'Clear' : team1.name ? 'Start The Game' : 'Set teams'}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {showLogs ? (
           <FlatList
             removeClippedSubviews={true}

@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native'
 import players from '../constants/players'
+import { Ionicons } from '@expo/vector-icons'
 
 export default function PlayersScreen() {
   const [modalPLayer, setModalPLayer] = useState<any>('')
@@ -54,6 +55,13 @@ export default function PlayersScreen() {
       >
         <View style={styles.modalView}>
           <View style={styles.modalBlock}>
+            <TouchableOpacity
+              style={styles.exitButton}
+              activeOpacity={0.8}
+              onPress={() => setModalPLayer(false)}
+            >
+              <Ionicons name="close-outline" size={36} color="black" />
+            </TouchableOpacity>
             <Text>{modalPLayer.name}</Text>
           </View>
         </View>
@@ -94,5 +102,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
+  },
+  exitButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

@@ -22,15 +22,15 @@ export default function TeamHeader() {
 
 const styles = StyleSheet.create({
   viewCenter: {
-    // width: '100%',
+    width: '92%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
   },
-  miniTitleName: { width: '50%', color: '#999', textAlign: 'left' },
-  miniTitle15: { width: '15%', color: '#999', textAlign: 'center' },
-  miniTitle20: { width: '20%', color: '#999', textAlign: 'center' },
+  miniTitleName: { width: '55%', color: '#999', textAlign: 'left' },
+  miniTitle15: { width: '13%', color: '#999', textAlign: 'center' },
+  miniTitle20: { width: '19%', color: '#999', textAlign: 'center' },
   separator: {
     width: 1,
     height: '100%',

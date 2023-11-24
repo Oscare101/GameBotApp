@@ -23,6 +23,8 @@ const tournamentsData: any = [
     name: 'Spring Stage',
     prizes: [150000, 80000, 35000, 35000],
     winner: '',
+    description:
+      'The second seasonal tournament, which is part of the four in the series.',
     cup: 2,
   },
   {
@@ -39,6 +41,8 @@ const tournamentsData: any = [
     name: 'Summer Stage',
     prizes: [80000, 40000, 15000, 15000],
     winner: '',
+    description:
+      'The third seasonal tournament, which is part of the four in the series.',
     cup: 4,
   },
 
@@ -47,6 +51,8 @@ const tournamentsData: any = [
     name: 'Autumn Stage',
     prizes: [150000, 80000, 35000, 35000],
     winner: '',
+    description:
+      'The last tournament of the season, which is part of the four in the series.',
     cup: 5,
   },
 
@@ -99,7 +105,7 @@ export default function TournamentsScreen({ navigation }: any) {
           </View>
           <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
             <Text style={styles.tournamentsInfoTitle}>
-              {sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+              {sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
             </Text>
             <Text style={styles.tournamentsInfoName}>Prize</Text>
           </View>
