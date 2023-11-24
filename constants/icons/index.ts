@@ -15,6 +15,25 @@ import MajorCupBig from './majorCupBig.svg'
 import TheGrandSlamCup from './theGrandSlamCup.svg'
 import TheGrandSlamCupBig from './theGrandSlamCupBig.svg'
 
+// TEAMS
+
+import NOVATeam from './NOVATeam.svg'
+import QuazarsTeam from './QuazarsTeam.svg'
+import OGTeam from './OGTeam.svg'
+import VangardTeam from './VangardTeam.svg'
+import IslandTeam from './IslandTeam.svg'
+import SolidTeam from './SolidTeam.svg'
+import TopGunTeam from './TopGunTeam.svg'
+import JupiterTeam from './JupiterTeam.svg'
+import NOVATeamBig from './NOVATeamBig.svg'
+import QuazarsTeamBig from './QuazarsTeamBig.svg'
+import OGTeamBig from './OGTeamBig.svg'
+import VangardTeamBig from './VangardTeamBig.svg'
+import IslandTeamBig from './IslandTeamBig.svg'
+import SolidTeamBig from './SolidTeamBig.svg'
+import TopGunTeamBig from './TopGunTeamBig.svg'
+import JupiterTeamBig from './JupiterTeamBig.svg'
+
 export {
   WinterCup,
   WinterCupBig,
@@ -32,4 +51,21 @@ export {
   MajorCupBig,
   TheGrandSlamCup,
   TheGrandSlamCupBig,
+  //TEAMS
+  NOVATeam,
+  NOVATeamBig,
+  QuazarsTeam,
+  QuazarsTeamBig,
+  OGTeam,
+  OGTeamBig,
+  VangardTeam,
+  VangardTeamBig,
+  IslandTeam,
+  IslandTeamBig,
+  SolidTeam,
+  SolidTeamBig,
+  TopGunTeam,
+  TopGunTeamBig,
+  JupiterTeam,
+  JupiterTeamBig,
 }

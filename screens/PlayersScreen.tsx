@@ -10,6 +10,8 @@ import {
 } from 'react-native'
 import players from '../constants/players'
 import { Ionicons } from '@expo/vector-icons'
+import Teams from '../components/Teams'
+import TeamsBig from '../components/TeamBig'
 
 export default function PlayersScreen() {
   const [modalPLayer, setModalPLayer] = useState<any>('')
@@ -62,7 +64,19 @@ export default function PlayersScreen() {
             >
               <Ionicons name="close-outline" size={36} color="black" />
             </TouchableOpacity>
-            <Text>{modalPLayer.name}</Text>
+            <Text style={styles.modalPlayerName}>{modalPLayer.name}</Text>
+            <TeamsBig team={modalPLayer.team} />
+            <View>
+              <Text style={styles.modalPlayerInfo}>
+                Team: {modalPLayer.team}
+              </Text>
+              <Text style={styles.modalPlayerInfo}>
+                Rating: {modalPLayer.rating}
+              </Text>
+              <Text style={styles.modalPlayerInfo}>
+                Role: {modalPLayer.role}
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>
@@ -111,5 +125,16 @@ const styles = StyleSheet.create({
     width: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modalPlayerName: {
+    fontSize: 30,
+    borderBottomColor: '#000',
+    borderBottomWidth: 1,
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalPlayerInfo: {
+    fontSize: 20,
   },
 })
