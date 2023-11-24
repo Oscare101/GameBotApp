@@ -1,5 +1,5 @@
 export interface Player {
-  name: string
+  nickName: string
   rating: number
   experience: number
   role: 'Free' | 'Capitan' | 'Fragger' | 'Support' | 'Lurker'
@@ -15,6 +15,9 @@ export interface Team {
     players: {
       nickName: string
       rating: number
+      experience?: any
+      team?: string
+      role?: string
     }[]
   }
 }

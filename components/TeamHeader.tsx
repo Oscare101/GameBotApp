@@ -28,9 +28,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 10,
   },
-  miniTitleName: { width: '55%', color: '#999', textAlign: 'left' },
-  miniTitle15: { width: '13%', color: '#999', textAlign: 'center' },
-  miniTitle20: { width: '19%', color: '#999', textAlign: 'center' },
+  miniTitleName: { width: '60%', color: '#999', textAlign: 'left' },
+  miniTitle15: { width: '12%', color: '#999', textAlign: 'center' },
+  miniTitle20: { width: '16%', color: '#999', textAlign: 'center' },
   separator: {
     width: 1,
     height: '100%',

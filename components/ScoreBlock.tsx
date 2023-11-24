@@ -1,14 +1,75 @@
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import colors from '../constants/colors'
 import { GetMapsScore, GetScore } from '../functions/functions'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
+import { useState } from 'react'
+import players from '../constants/players'
+import Teams from './Teams'
+import { updateTeam1 } from '../redux/team1'
+import { Player, Team } from '../constants/interfaces'
+import { updateTeam2 } from '../redux/team2'
 
 export default function ScoreBlock(props: any) {
   const team1 = useSelector((state: RootState) => state.team1.team)
   const team2 = useSelector((state: RootState) => state.team2.team)
   const log = useSelector((state: RootState) => state.log)
   const mapPoints = useSelector((state: RootState) => state.mapPoints)
+  const dispatch = useDispatch()
+  const [team1Modal, setTeam1Modal] = useState<boolean>(false)
+  const [team2Modal, setTeam2Modal] = useState<boolean>(false)
+
+  function GetTeams() {
+    let arr: any = []
+    players.forEach((player: any) => {
+      if (!arr.includes(player.team)) {
+        arr.push(player.team)
+      }
+    })
+    return arr
+  }
+
+  function RenderTeams({ item }: any) {
+    return (
+      <TouchableOpacity
+        style={{
+          padding: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+        }}
+        activeOpacity={0.8}
+        onPress={() => {
+          const t: Team = {
+            team: {
+              name: item as string,
+              motivation: 0.5,
+              tactic: 0.5,
+              economics: 0.5,
+              players: players.filter((player: any) => player.team === item),
+            },
+          }
+          if (team1Modal) {
+            dispatch(updateTeam1(t.team))
+            setTeam1Modal(false)
+          } else {
+            dispatch(updateTeam2(t.team))
+            setTeam2Modal(false)
+          }
+        }}
+      >
+        <Teams team={item} />
+        <Text style={{ fontSize: 20, paddingLeft: 15 }}>{item}</Text>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <>
@@ -20,21 +81,86 @@ export default function ScoreBlock(props: any) {
       </Text>
 
       <View style={styles.header}>
-        <Text
-          style={[
-            styles.teamName,
-            {
-              color: colors.team1NameColor,
-              opacity:
-                GetMapsScore(team2, mapPoints) ===
-                Math.floor(props.bestOf / 2 + 1)
-                  ? 0.5
-                  : 1,
-            },
-          ]}
+        <TouchableOpacity
+          style={{
+            width: '40%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}
+          activeOpacity={0.8}
+          onPress={() => {
+            if (props.gameIsActive) {
+              return false
+            } else {
+              setTeam1Modal(true)
+            }
+          }}
         >
-          {team1.name}
-        </Text>
+          {team1.name ? <Teams team={team1.name} /> : <></>}
+          <Text
+            style={[
+              styles.teamName,
+              {
+                color: colors.team1NameColor,
+                opacity: team1.name
+                  ? GetMapsScore(team2, mapPoints) ===
+                    Math.floor(props.bestOf / 2 + 1)
+                    ? 0.5
+                    : 1
+                  : 0.3,
+                paddingLeft: 5,
+              },
+            ]}
+          >
+            {team1.name || 'team 1'}
+          </Text>
+        </TouchableOpacity>
+        <Modal
+          visible={team1Modal}
+          transparent
+          style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
+        >
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              activeOpacity={1}
+              onPress={() => setTeam1Modal(false)}
+            >
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 20,
+                  left: 20,
+                  backgroundColor: '#fff',
+                  elevation: 5,
+                  padding: 10,
+                  borderRadius: 5,
+                }}
+              >
+                <FlatList
+                  data={GetTeams()}
+                  renderItem={RenderTeams}
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: '#eee',
+                      }}
+                    />
+                  )}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
         <View
           style={{
             flexDirection: 'column',
@@ -137,22 +263,87 @@ export default function ScoreBlock(props: any) {
           </View>
         </View>
 
-        <Text
-          style={[
-            styles.teamName,
-            {
-              color: colors.team2NameColor,
-              textAlign: 'right',
-              opacity:
-                GetMapsScore(team1, mapPoints) ===
-                Math.floor(props.bestOf / 2 + 1)
-                  ? 0.5
-                  : 1,
-            },
-          ]}
+        <TouchableOpacity
+          style={{
+            width: '40%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}
+          activeOpacity={0.8}
+          onPress={() => {
+            if (props.gameIsActive) {
+              return false
+            } else {
+              setTeam2Modal(true)
+            }
+          }}
         >
-          {team2.name}
-        </Text>
+          <Text
+            style={[
+              styles.teamName,
+              {
+                color: colors.team2NameColor,
+                textAlign: 'right',
+                opacity: team2.name
+                  ? GetMapsScore(team1, mapPoints) ===
+                    Math.floor(props.bestOf / 2 + 1)
+                    ? 0.5
+                    : 1
+                  : 0.3,
+                paddingRight: 5,
+              },
+            ]}
+          >
+            {team2.name || 'team 2'}
+          </Text>
+          {team2.name ? <Teams team={team2.name} /> : <></>}
+        </TouchableOpacity>
+
+        <Modal
+          visible={team2Modal}
+          transparent
+          style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
+        >
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              activeOpacity={1}
+              onPress={() => setTeam2Modal(false)}
+            >
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 20,
+                  right: 20,
+                  backgroundColor: '#fff',
+                  elevation: 5,
+                  padding: 10,
+                  borderRadius: 5,
+                }}
+              >
+                <FlatList
+                  data={GetTeams()}
+                  renderItem={RenderTeams}
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: '#eee',
+                      }}
+                    />
+                  )}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     </>
   )
@@ -170,7 +361,6 @@ const styles = StyleSheet.create({
   teamName: {
     fontSize: 25,
     fontWeight: '500',
-    width: '40%',
   },
   score: {
     fontSize: 24,

@@ -265,18 +265,18 @@ export default function Main() {
     setRounds(MRNumber)
     dispatch(clearLog())
 
-    let team1Value = team1Grid.team
+    let team1Value = team1
     team1Value.economics = 0.5
     dispatch(updateTeam1(team1Value))
 
-    let team2Value = team2Grid.team
+    let team2Value = team2
     team2Value.economics = 0.5
     dispatch(updateTeam2(team2Value))
     setGameIsActive(true)
   }
 
   async function StartTheGame() {
-    SetTeams()
+    // SetTeams()
     if (team1.name && team2.name) {
       setRounds(MRNumber)
 
@@ -411,7 +411,12 @@ export default function Main() {
       }}
     >
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
-      <ScoreBlock bestOf={bestOf} rounds={rounds} MRNumber={MRNumber} />
+      <ScoreBlock
+        bestOf={bestOf}
+        rounds={rounds}
+        MRNumber={MRNumber}
+        gameIsActive={gameIsActive}
+      />
       <TeamHeader />
       <View
         style={{
@@ -422,17 +427,26 @@ export default function Main() {
           paddingHorizontal: 10,
         }}
       >
-        <FlatList
-          style={{ flex: 1 }}
-          data={team1.players}
-          renderItem={RenderPlayers1}
-        />
+        {team1.name ? (
+          <FlatList
+            style={{ flex: 1 }}
+            data={team1.players}
+            renderItem={RenderPlayers1}
+          />
+        ) : (
+          <View style={{ flex: 1 }}></View>
+        )}
+
         <View style={styles.separator} />
-        <FlatList
-          style={{ flex: 1 }}
-          data={team2.players}
-          renderItem={RenderPlayers2}
-        />
+        {team2.name ? (
+          <FlatList
+            style={{ flex: 1 }}
+            data={team2.players}
+            renderItem={RenderPlayers2}
+          />
+        ) : (
+          <View style={{ flex: 1 }}></View>
+        )}
       </View>
       <View
         style={{
@@ -576,28 +590,28 @@ export default function Main() {
 
 const styles = StyleSheet.create({
   userName: {
-    width: '55%',
+    width: '60%',
     fontSize: 18,
     color: '#000',
     paddingHorizontal: 5,
   },
   userRating: {
     fontSize: 10,
-    width: '19%',
+    width: '16%',
     color: '#000',
     textAlign: 'center',
     opacity: 0.5,
   },
   userKill: {
     fontSize: 16,
-    width: '13%',
+    width: '12%',
     color: '#000',
     textAlign: 'center',
   },
 
   userDeath: {
     fontSize: 16,
-    width: '13%',
+    width: '12%',
     color: '#000',
     textAlign: 'center',
   },
