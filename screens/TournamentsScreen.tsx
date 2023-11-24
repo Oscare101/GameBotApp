@@ -8,75 +8,13 @@ import {
 } from 'react-native'
 import Cups from '../components/Cups'
 import { TheGrandSlamCup } from '../constants/icons'
-const tournamentsData: any = [
-  {
-    season: 1,
-    name: 'Winter Stage',
-    prizes: [80000, 40000, 15000, 15000],
-    winner: '',
-    cup: 1,
-    description:
-      'An annual winter tournament that opens the gaming season. It is one of the four seasonal tournaments.',
-  },
-  {
-    season: 1,
-    name: 'Spring Stage',
-    prizes: [150000, 80000, 35000, 35000],
-    winner: '',
-    description:
-      'The second seasonal tournament, which is part of the four in the series.',
-    cup: 2,
-  },
-  {
-    season: 1,
-    name: 'World Qualifications',
-    prizes: [150000, 80000, 35000, 35000],
-    winner: '',
-    cup: 3,
-    description:
-      'Qualifying tournament for the World Cup. The winner will get a place in the playoffs for the World Championship',
-  },
-  {
-    season: 1,
-    name: 'Summer Stage',
-    prizes: [80000, 40000, 15000, 15000],
-    winner: '',
-    description:
-      'The third seasonal tournament, which is part of the four in the series.',
-    cup: 4,
-  },
-
-  {
-    season: 1,
-    name: 'Autumn Stage',
-    prizes: [150000, 80000, 35000, 35000],
-    winner: '',
-    description:
-      'The last tournament of the season, which is part of the four in the series.',
-    cup: 5,
-  },
-
-  {
-    season: 1,
-    name: 'World Championship',
-    prizes: [250000, 110000, 40000, 40000, 15000, 15000, 15000, 15000],
-    winner: '',
-    cup: 6,
-    description:
-      'One of the most important tournaments of the season, the world champion will be decided according to the version of the World Championship',
-  },
-  {
-    season: 1,
-    name: 'Major',
-    prizes: [500000, 200000, 100000, 100000, 25000, 25000, 25000, 25000],
-    winner: '',
-    cup: 7,
-    description:
-      'The last tournament of the season, the most expensive and the most important for each team. Majors are always the most difficult to win, but also the biggest reward',
-  },
-]
+import { useSelector } from 'react-redux'
+import { RootState } from '../redux'
+import Teams from '../components/Teams'
 
 export default function TournamentsScreen({ navigation }: any) {
+  const tournaments = useSelector((state: RootState) => state.tournaments)
+
   function RenderTournamentItem({ item }: any) {
     const sum = item.prizes.reduce(function (a: any, b: any) {
       return a + b
@@ -116,9 +54,12 @@ export default function TournamentsScreen({ navigation }: any) {
             <Text style={styles.tournamentsInfoName}>Teams</Text>
           </View>
           <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
-            <Text style={styles.tournamentsInfoTitle}>
-              {item.winner || '?'}
-            </Text>
+            {item.winner ? (
+              <Teams team={item.winner.team.name} />
+            ) : (
+              <Text style={styles.tournamentsInfoTitle}>?</Text>
+            )}
+
             <Text style={styles.tournamentsInfoName}>Winner</Text>
           </View>
         </View>
@@ -135,7 +76,7 @@ export default function TournamentsScreen({ navigation }: any) {
       <FlatList
         showsVerticalScrollIndicator={false}
         style={{ width: '100%' }}
-        data={tournamentsData}
+        data={tournaments}
         renderItem={RenderTournamentItem}
       />
     </View>

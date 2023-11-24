@@ -13,9 +13,11 @@ import Teams from '../components/Teams'
 import TeamsBig from '../components/TeamBig'
 import { useSelector } from 'react-redux'
 import { RootState } from '../redux'
+import Cups from '../components/Cups'
 
-export default function PlayersScreen() {
+export default function PlayersScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
+  const tournaments = useSelector((state: RootState) => state.tournaments)
 
   const [modalPLayer, setModalPLayer] = useState<any>('')
   const [teamInfo, setTeamInfo] = useState<boolean>(false)
@@ -66,6 +68,21 @@ export default function PlayersScreen() {
     })
     arr.sort((a: any, b: any) => b.rating - a.rating)
     return arr
+  }
+
+  function RenderTrophies({ item }: any) {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => {
+          setModalPLayer(false)
+          setTeamInfo(false)
+          navigation.navigate('TournamentInfoScreen', { tournament: item })
+        }}
+      >
+        <Cups cup={item.cup} />
+      </TouchableOpacity>
+    )
   }
 
   function RenderPlayersTeam({ item, index }: any) {
@@ -182,6 +199,19 @@ export default function PlayersScreen() {
             $
           </Text>
         </View>
+        <Text>Trophies</Text>
+        <FlatList
+          horizontal
+          data={tournaments.filter(
+            (i: any) =>
+              i.winner &&
+              i.winner.team.name === modalPLayer.team &&
+              i.winner.team.players.find(
+                (i: any) => i.nickName === modalPLayer.nickName
+              )
+          )}
+          renderItem={RenderTrophies}
+        />
       </>
     )
   }
@@ -196,7 +226,7 @@ export default function PlayersScreen() {
         >
           <Ionicons name="chevron-back" size={36} color="black" />
         </TouchableOpacity>
-        <Text style={styles.modalPlayerName}>{modalPLayer.nickName}</Text>
+        <Text style={styles.modalPlayerName}>{modalPLayer.team}</Text>
         <TeamsBig team={modalPLayer.team} />
         <FlatList
           style={{ width: '92%', marginTop: 10 }}
@@ -204,6 +234,14 @@ export default function PlayersScreen() {
             (player: any) => player.team === modalPLayer.team
           )}
           renderItem={RenderPlayersTeam}
+        />
+        <Text>Trophies</Text>
+        <FlatList
+          horizontal
+          data={tournaments.filter(
+            (i: any) => i.winner && i.winner.team.name === modalPLayer.team
+          )}
+          renderItem={RenderTrophies}
         />
       </>
     )

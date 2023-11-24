@@ -5,6 +5,7 @@ import logReducer from './logs'
 import mapPointsReducer from './mapPoints'
 import gameOptionsReducer from './gameOptions'
 import playersReducer from './players'
+import tournamentsReducer from './tournaments'
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     mapPoints: mapPointsReducer,
     gameOptions: gameOptionsReducer,
     players: playersReducer,
+    tournaments: tournamentsReducer,
   },
 })

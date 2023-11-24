@@ -32,90 +32,13 @@ import mapPoints, { clearMapPoints, updateMapPoints } from '../redux/mapPoints'
 import RenderRounds from '../components/RenderRounds'
 import { updatePlayers } from '../redux/players'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
-const NOVA: Team = {
-  team: {
-    name: 'NOVA',
-    motivation: 0.7,
-    tactic: 0.7,
-    players: [
-      { nickName: 'Oscare', rating: 1.75 },
-      { nickName: 'Modest', rating: 1.44 },
-      { nickName: 'Niko', rating: 1.43 },
-      { nickName: 'b1t', rating: 1.39 },
-      { nickName: 'Refresh', rating: 1.33 },
-    ],
-  },
-}
-
-const Quazars: any = {
-  team: {
-    name: 'Quazars',
-    motivation: 0.5,
-    tactic: 0.6,
-    players: [
-      { nickName: 'Header', rating: 1.52 },
-      { nickName: 'Xantares', rating: 1.36 },
-      { nickName: 'Rain', rating: 1.28 },
-      { nickName: 'Tabsen', rating: 1.2 },
-      { nickName: 'Cloudy', rating: 1.2 },
-    ],
-  },
-}
-
-const OG: any = {
-  team: {
-    name: 'OG',
-    motivation: 0.7,
-    tactic: 0.6,
-    players: [
-      { nickName: 'Olaph', rating: 1.43 },
-      { nickName: 'Nelo', rating: 1.34 },
-      { nickName: 'Rossander', rating: 1.3 },
-      { nickName: 'Focus', rating: 1.27 },
-      { nickName: 'Torin', rating: 1.24 },
-    ],
-  },
-}
-
-const Vangard: any = {
-  team: {
-    name: 'Vangard',
-    motivation: 0.5,
-    tactic: 0.3,
-    players: [
-      { nickName: 'Collector', rating: 1.36 },
-      { nickName: 'Kscerato', rating: 1.25 },
-      { nickName: 'Fury', rating: 1.25 },
-      { nickName: 'Tenor', rating: 1.24 },
-      { nickName: 'Stoic', rating: 1.23 },
-    ],
-  },
-}
-
-const other: any = {
-  team: {
-    name: 'other',
-    motivation: 0.5,
-    tactic: 0.5,
-    players: [
-      { nickName: 'Salivan', rating: 1.26 },
-      { nickName: 'Wong', rating: 1.24 },
-      { nickName: 'Cicada', rating: 1.23 },
-      { nickName: 'LoswIt', rating: 1.22 },
-      { nickName: 'Syrson', rating: 1.22 },
-    ],
-  },
-}
-
-const team1Grid = NOVA
-const team2Grid = Quazars
+import rules from '../constants/rules'
 
 const delay: any = 10 // milliseconds for every action
 const showLogs: boolean = false
 const showRounds: boolean = false
-const bestOf: number = 1
-const MRNumber: number = 3 // best of x2 rounds, need number+1 won rounds to win the game
+const bestOf: number = 3
+const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
 export default function Main() {
@@ -168,40 +91,58 @@ export default function Main() {
             ) {
               setGameIsActive(false)
               clearInterval(intervalId)
-              if (
-                GetMapsScore(team1, winnersArr) >
-                GetMapsScore(team2, winnersArr)
-              ) {
-                const newPlayersArr = GetSortedPlayersByRating().map(
-                  (i: any) => {
-                    if (i.team === team1.name) {
-                      return { ...i, tactic: i.tactic + 0.01 }
-                    } else {
-                      return i
-                    }
+              const newPlayersArr = GetSortedPlayersByRating().map((i: any) => {
+                if (i.team === team1.name || i.team === team2.name) {
+                  return {
+                    ...i,
+                    rating: +(
+                      Math.random() > 0.5 ? i.rating + 0.01 : i.rating - 0.01
+                    ).toFixed(2),
                   }
-                )
-                dispatch(updatePlayers(newPlayersArr))
-                await AsyncStorage.setItem(
-                  'players',
-                  JSON.stringify(newPlayersArr)
-                )
-              } else {
-                const newPlayersArr = GetSortedPlayersByRating().map(
-                  (i: any) => {
-                    if (i.team === team2.name) {
-                      return { ...i, tactic: i.tactic + 0.01 }
-                    } else {
-                      return i
-                    }
-                  }
-                )
-                dispatch(updatePlayers(newPlayersArr))
-                await AsyncStorage.setItem(
-                  'players',
-                  JSON.stringify(newPlayersArr)
-                )
-              }
+                } else {
+                  return i
+                }
+              })
+              dispatch(updatePlayers(newPlayersArr))
+              await AsyncStorage.setItem(
+                'players',
+                JSON.stringify(newPlayersArr)
+              )
+
+              // if (
+              //   GetMapsScore(team1, winnersArr) >
+              //   GetMapsScore(team2, winnersArr)
+              // ) {
+              //   const newPlayersArr = GetSortedPlayersByRating().map(
+              //     (i: any) => {
+              //       if (i.team === team1.name) {
+              //         return { ...i, tactic: i.tactic + 0.01 }
+              //       } else {
+              //         return i
+              //       }
+              //     }
+              //   )
+              //   dispatch(updatePlayers(newPlayersArr))
+              //   await AsyncStorage.setItem(
+              //     'players',
+              //     JSON.stringify(newPlayersArr)
+              //   )
+              // } else {
+              //   const newPlayersArr = GetSortedPlayersByRating().map(
+              //     (i: any) => {
+              //       if (i.team === team2.name) {
+              //         return { ...i, tactic: i.tactic + 0.01 }
+              //       } else {
+              //         return i
+              //       }
+              //     }
+              //   )
+              //   dispatch(updatePlayers(newPlayersArr))
+              //   await AsyncStorage.setItem(
+              //     'players',
+              //     JSON.stringify(newPlayersArr)
+              //   )
+              // }
             } else {
               StartTheNewMap()
             }
@@ -349,16 +290,6 @@ export default function Main() {
       name: '',
       players: [{ nickName: '-', rating: 0 }],
     }
-    dispatch(updateTeam2(team2Value))
-  }
-
-  async function SetTeams() {
-    let team1Value = team1Grid.team
-    team1Value.economics = 0.5
-    dispatch(updateTeam1(team1Value))
-
-    let team2Value = team2Grid.team
-    team2Value.economics = 0.5
     dispatch(updateTeam2(team2Value))
   }
 

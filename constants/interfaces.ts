@@ -8,6 +8,15 @@ export interface Player {
   tactic: number
 }
 
+export interface Tournament {
+  season?: number
+  name: string
+  prizes?: any[]
+  winner?: Team | string
+  cup: number
+  description: string
+}
+
 export interface Team {
   team: {
     name: string
@@ -19,8 +28,10 @@ export interface Team {
       nickName: string
       rating: number
       experience?: any
+      motivation?: number
       team?: string
       role?: string
+      tactic?: number
     }[]
   }
 }

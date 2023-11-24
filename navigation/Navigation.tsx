@@ -102,16 +102,6 @@ export default function Navigation() {
           name="TournamentsScreen"
           component={TournamentsScreen}
         />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-            gestureDirection: 'horizontal',
-            gestureEnabled: true,
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          }}
-          name="TournamentInfoScreen"
-          component={TournamentInfoScreen}
-        />
       </Stack.Navigator>
     )
   }
@@ -191,6 +181,16 @@ export default function Navigation() {
         component={NavigationApp}
       />
       {/* other screens then must apear without bottom tab navigation */}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          gestureDirection: 'horizontal',
+          gestureEnabled: true,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+        name="TournamentInfoScreen"
+        component={TournamentInfoScreen}
+      />
     </Stack.Navigator>
   )
 
