@@ -476,9 +476,7 @@ export default function Main() {
       <View
         style={{ width: '100%', flex: 1, padding: 10, alignItems: 'center' }}
       >
-        {gameIsActive ? (
-          <></>
-        ) : (
+        {!gameIsActive && team1.name && team2.name ? (
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -500,26 +498,9 @@ export default function Main() {
                   : 'Set teams'}
               </Text>
             </TouchableOpacity>
-            {/* {log.length > 0 && GetScore(team1, log) === GetScore(team2, log) ? (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={ContinueGame}
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 10,
-                  backgroundColor: '#666',
-                  borderRadius: 10,
-                  marginLeft: 10,
-                }}
-              >
-                <Text style={{ fontSize: 28, color: '#fff' }}>Additional</Text>
-              </TouchableOpacity>
-            ) : (
-              <></>
-            )} */}
           </View>
+        ) : (
+          <></>
         )}
         {/* <TouchableOpacity
           activeOpacity={0.8}

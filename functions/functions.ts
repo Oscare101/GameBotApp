@@ -1,3 +1,5 @@
+import { Player } from '../constants/interfaces'
+
 export function GetTeamRating(team: any) {
   let teamMotivationValue = 1 + (team.motivation || 0 * 20) / 100
   let teamTacticValue = 1 + (team.tactic || 0 * 20) / 100
@@ -223,4 +225,72 @@ export function InstantGame(
     }
   }
   return winnersArr
+}
+
+export function GetSortedPlayersByRating(players: Player[]) {
+  let arr: any = []
+  players.forEach((i: any) => {
+    arr.push(i)
+  })
+  arr.sort((a: any, b: any) => b.rating - a.rating)
+  return arr
+}
+
+export function GetSortedPlayersByTeams(players: Player[]) {
+  let arr: any = []
+  players.forEach((i: any) => {
+    arr.push(i)
+  })
+
+  const groupedByTeam = arr.reduce((acc: any, player: any) => {
+    const { team, rating } = player
+    if (!acc[team]) {
+      acc[team] = { players: [], totalRating: 0, count: 0 }
+    }
+
+    acc[team].players.push(player)
+    acc[team].totalRating += rating
+    acc[team].count += 1
+
+    return acc
+  }, {})
+
+  const sortedTeams = Object.entries(groupedByTeam)
+    .sort(([depA, dataA]: any, [depB, dataB]: any) => {
+      const avgRatingA = dataA.totalRating / dataA.count
+      const avgRatingB = dataB.totalRating / dataB.count
+      return avgRatingA - avgRatingB
+    })
+    .map(([team, data]: any) => ({
+      team,
+      players: data.players.sort((a: any, b: any) => a.rating - b.rating),
+    }))
+
+  let sortedArr: any = []
+
+  sortedTeams.reverse().forEach((i: any) => {
+    i.players.reverse().forEach((p: any) => {
+      sortedArr.push(p)
+    })
+  })
+
+  return sortedArr
+}
+
+export function GetSortedPlayersByNickNames(players: Player[]) {
+  let arr: any = []
+  players.forEach((i: any) => {
+    arr.push(i)
+  })
+  arr.sort((a: any, b: any) => a.nickName.localeCompare(b.nickName))
+  return arr
+}
+
+export function GetSortedPlayersByRoles(players: Player[]) {
+  let arr: any = []
+  players.forEach((i: any) => {
+    arr.push(i)
+  })
+  arr.sort((a: any, b: any) => a.role.localeCompare(b.role))
+  return arr
 }

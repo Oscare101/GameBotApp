@@ -14,6 +14,13 @@ import TeamsBig from '../components/TeamBig'
 import { useSelector } from 'react-redux'
 import { RootState } from '../redux'
 import Cups from '../components/Cups'
+import {
+  GetSortedPlayersByNickNames,
+  GetSortedPlayersByRating,
+  GetSortedPlayersByRoles,
+  GetSortedPlayersByTeams,
+} from '../functions/functions'
+import PlayersHeader from '../components/PlayersHeader'
 
 export default function PlayersScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
@@ -48,7 +55,9 @@ export default function PlayersScreen({ navigation }: any) {
   function PlayerPriceKoef(rating: number) {
     const topPercent =
       (players.length -
-        GetSortedPlayersByRating().findIndex((i: any) => i.rating === rating)) /
+        GetSortedPlayersByRating(players).findIndex(
+          (i: any) => i.rating === rating
+        )) /
       players.length
 
     return 1 + 4 * topPercent
@@ -56,78 +65,11 @@ export default function PlayersScreen({ navigation }: any) {
 
   function PlayerPriceAmount(rating: number) {
     const price =
-      (rating - GetSortedPlayersByRating()[players.length - 1].rating * 0.8) *
+      (rating -
+        GetSortedPlayersByRating(players)[players.length - 1].rating * 0.8) *
       500000
 
     return price
-  }
-
-  function GetSortedPlayersByRating() {
-    let arr: any = []
-    players.forEach((i: any) => {
-      arr.push(i)
-    })
-    arr.sort((a: any, b: any) => b.rating - a.rating)
-    return arr
-  }
-
-  function GetSortedPlayersByTeams() {
-    let arr: any = []
-    players.forEach((i: any) => {
-      arr.push(i)
-    })
-
-    const groupedByTeam = arr.reduce((acc: any, player: any) => {
-      const { team, rating } = player
-      if (!acc[team]) {
-        acc[team] = { players: [], totalRating: 0, count: 0 }
-      }
-
-      acc[team].players.push(player)
-      acc[team].totalRating += rating
-      acc[team].count += 1
-
-      return acc
-    }, {})
-
-    const sortedTeams = Object.entries(groupedByTeam)
-      .sort(([depA, dataA]: any, [depB, dataB]: any) => {
-        const avgRatingA = dataA.totalRating / dataA.count
-        const avgRatingB = dataB.totalRating / dataB.count
-        return avgRatingA - avgRatingB
-      })
-      .map(([team, data]: any) => ({
-        team,
-        players: data.players.sort((a: any, b: any) => a.rating - b.rating),
-      }))
-
-    let sortedArr: any = []
-
-    sortedTeams.reverse().forEach((i: any) => {
-      i.players.reverse().forEach((p: any) => {
-        sortedArr.push(p)
-      })
-    })
-
-    return sortedArr
-  }
-
-  function GetSortedPlayersByNickNames() {
-    let arr: any = []
-    players.forEach((i: any) => {
-      arr.push(i)
-    })
-    arr.sort((a: any, b: any) => a.nickName.localeCompare(b.nickName))
-    return arr
-  }
-
-  function GetSortedPlayersByRoles() {
-    let arr: any = []
-    players.forEach((i: any) => {
-      arr.push(i)
-    })
-    arr.sort((a: any, b: any) => a.role.localeCompare(b.role))
-    return arr
   }
 
   function RenderTrophies({ item }: any) {
@@ -238,7 +180,7 @@ export default function PlayersScreen({ navigation }: any) {
                 left:
                   (100 *
                     (players.length -
-                      GetSortedPlayersByRating().findIndex(
+                      GetSortedPlayersByRating(players).findIndex(
                         (i: any) => i.rating === modalPLayer.rating
                       ))) /
                   players.length,
@@ -290,7 +232,7 @@ export default function PlayersScreen({ navigation }: any) {
         <TeamsBig team={modalPLayer.team} />
         <FlatList
           style={{ width: '92%', marginTop: 10 }}
-          data={GetSortedPlayersByRating().filter(
+          data={GetSortedPlayersByRating(players).filter(
             (player: any) => player.team === modalPLayer.team
           )}
           renderItem={RenderPlayersTeam}
@@ -317,63 +259,20 @@ export default function PlayersScreen({ navigation }: any) {
       }}
     >
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
-      <View style={[styles.playerBlock, { width: '92%', height: 50 }]}>
-        <Text style={styles.playerPosition}></Text>
-        <TouchableOpacity
-          style={styles.playerName}
-          activeOpacity={0.8}
-          onPress={() => {
-            setSortBy('NickName')
-          }}
-        >
-          <Text style={{ fontWeight: sortBy === 'NickName' ? '500' : '300' }}>
-            NickName
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerRating}
-          activeOpacity={0.8}
-          onPress={() => {
-            setSortBy('Rating')
-          }}
-        >
-          <Text style={{ fontWeight: sortBy === 'Rating' ? '500' : '300' }}>
-            Rating
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerRole}
-          activeOpacity={0.8}
-          onPress={() => {
-            setSortBy('Role')
-          }}
-        >
-          <Text style={{ fontWeight: sortBy === 'Role' ? '500' : '300' }}>
-            Role
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerTeam}
-          activeOpacity={0.8}
-          onPress={() => {
-            setSortBy('Team')
-          }}
-        >
-          <Text style={{ fontWeight: sortBy === 'Team' ? '500' : '300' }}>
-            Team
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <PlayersHeader
+        sortBy={sortBy}
+        setSortBy={(value: string) => setSortBy(value)}
+      />
       <FlatList
         style={{ width: '92%' }}
         data={
           sortBy === 'Rating'
-            ? GetSortedPlayersByRating()
+            ? GetSortedPlayersByRating(players)
             : sortBy === 'Team'
-            ? GetSortedPlayersByTeams()
+            ? GetSortedPlayersByTeams(players)
             : sortBy === 'NickName'
-            ? GetSortedPlayersByNickNames()
-            : GetSortedPlayersByRoles()
+            ? GetSortedPlayersByNickNames(players)
+            : GetSortedPlayersByRoles(players)
         }
         renderItem={RenderPlayer}
         showsVerticalScrollIndicator={false}
