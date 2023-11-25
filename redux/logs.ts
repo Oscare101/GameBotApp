@@ -11,7 +11,7 @@ const logSlice = createSlice({
       state.push(action.payload)
     },
     clearLog: (state) => {
-      state.splice(0, state.length) // Очищаємо масив, видаляючи всі елементи
+      state.splice(0, state.length)
     },
   },
 })

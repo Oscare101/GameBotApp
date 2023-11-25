@@ -98,6 +98,12 @@ export default function ScoreBlock(props: any) {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-start',
+            opacity: team1.name
+              ? GetMapsScore(team2, mapPoints) ===
+                Math.floor(props.bestOf / 2 + 1)
+                ? 0.5
+                : 1
+              : 0.3,
           }}
           activeOpacity={0.8}
           onPress={() => {
@@ -114,12 +120,7 @@ export default function ScoreBlock(props: any) {
               styles.teamName,
               {
                 color: colors.team1NameColor,
-                opacity: team1.name
-                  ? GetMapsScore(team2, mapPoints) ===
-                    Math.floor(props.bestOf / 2 + 1)
-                    ? 0.5
-                    : 1
-                  : 0.3,
+
                 paddingLeft: 5,
               },
             ]}
@@ -280,6 +281,12 @@ export default function ScoreBlock(props: any) {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-end',
+            opacity: team2.name
+              ? GetMapsScore(team1, mapPoints) ===
+                Math.floor(props.bestOf / 2 + 1)
+                ? 0.5
+                : 1
+              : 0.3,
           }}
           activeOpacity={0.8}
           onPress={() => {
@@ -296,12 +303,7 @@ export default function ScoreBlock(props: any) {
               {
                 color: colors.team2NameColor,
                 textAlign: 'right',
-                opacity: team2.name
-                  ? GetMapsScore(team1, mapPoints) ===
-                    Math.floor(props.bestOf / 2 + 1)
-                    ? 0.5
-                    : 1
-                  : 0.3,
+
                 paddingRight: 5,
               },
             ]}

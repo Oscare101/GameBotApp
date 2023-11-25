@@ -41,7 +41,7 @@ const bestOf: number = 3
 const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
 const additionalRounds = 3 // mr after draw
 
-export default function Main() {
+export default function Main(props: any) {
   const team1 = useSelector((state: RootState) => state.team1.team)
   const team2 = useSelector((state: RootState) => state.team2.team)
   const log = useSelector((state: RootState) => state.log)
@@ -108,6 +108,7 @@ export default function Main() {
                 'players',
                 JSON.stringify(newPlayersArr)
               )
+              props.onWinners(team1, team2, winnersArr)
 
               // if (
               //   GetMapsScore(team1, winnersArr) >
@@ -476,59 +477,49 @@ export default function Main() {
       <View
         style={{ width: '100%', flex: 1, padding: 10, alignItems: 'center' }}
       >
-        {!gameIsActive && team1.name && team2.name ? (
+        {!gameIsActive && team1.name && team2.name && !log.length ? (
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={log.length ? ClearGame : StartTheGame}
+              onPress={StartTheGame}
               style={{
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 10,
-                backgroundColor: '#666',
+                backgroundColor: '#9dbef2',
                 borderRadius: 10,
               }}
             >
               <Text style={{ fontSize: 28, color: '#fff' }}>
-                {log.length
-                  ? 'Clear'
-                  : team1.name
-                  ? 'Start The Game'
-                  : 'Set teams'}
+                Start The Game
               </Text>
             </TouchableOpacity>
           </View>
         ) : (
           <></>
         )}
-        {/* <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={
-            () => {
-              const winnersArr = InstantGame(
-                NOVA.team,
-                OG.team,
-                bestOf,
-                MRNumber,
-                additionalRounds
-              )
-            }
-            // TODO FIX this shit
-          }
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 10,
-            backgroundColor: '#f0f',
-            borderRadius: 10,
-          }}
-        >
-          <Text style={{ fontSize: 28, color: '#fff' }}>
-            {log.length ? 'Clear' : team1.name ? 'Start The Game' : 'Set teams'}
-          </Text>
-        </TouchableOpacity> */}
+        {log.length || gameIsActive ? (
+          <></>
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => props.onClose()}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 10,
+              // backgroundColor: '#666',
+              borderRadius: 10,
+              width: '100%',
+              marginTop: 20,
+              borderColor: '#9dbef2',
+              borderWidth: 3,
+            }}
+          >
+            <Text style={{ fontSize: 28, color: '#9dbef2' }}>Back</Text>
+          </TouchableOpacity>
+        )}
         {showLogs ? (
           <FlatList
             removeClippedSubviews={true}

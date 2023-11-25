@@ -30,17 +30,17 @@ export default function Navigation() {
           })
         },
       },
-      {
-        title: '',
-        iconActive: 'book',
-        iconInactive: 'book-outline',
-        action: () => {
-          navigation.navigate('MainNavigation', {
-            screen: 'MainScreen',
-            initial: false,
-          })
-        },
-      },
+      // {
+      //   title: '',
+      //   iconActive: 'book',
+      //   iconInactive: 'book-outline',
+      //   action: () => {
+      //     navigation.navigate('MainNavigation', {
+      //       screen: 'MainScreen',
+      //       initial: false,
+      //     })
+      //   },
+      // },
       {
         title: '',
         iconActive: 'rocket',
@@ -107,19 +107,19 @@ export default function Navigation() {
     )
   }
 
-  function MainNavigation() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="MainScreen"
-          component={Main}
-        />
-      </Stack.Navigator>
-    )
-  }
+  // function MainNavigation() {
+  //   return (
+  //     <Stack.Navigator>
+  //       <Stack.Screen
+  //         options={{
+  //           headerShown: false,
+  //         }}
+  //         name="MainScreen"
+  //         component={Main}
+  //       />
+  //     </Stack.Navigator>
+  //   )
+  // }
 
   function PlayersNavigation() {
     return (
@@ -145,13 +145,13 @@ export default function Navigation() {
             headerShown: false,
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="MainNavigation"
           component={MainNavigation}
           options={{
             headerShown: false,
           }}
-        />
+        /> */}
         <Tab.Screen
           name="TournamentsNavigation"
           component={TournamentsNavigation}
