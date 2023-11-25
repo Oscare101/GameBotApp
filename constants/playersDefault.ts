@@ -3,7 +3,7 @@ import { Player } from './interfaces'
 const playersDefault: Player[] = [
   {
     nickName: 'Oscare',
-    rating: 1.75,
+    rating: 1.42,
     team: 'NOVA',
     experience: 0,
     role: 'Capitan',
@@ -12,7 +12,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Header',
-    rating: 1.52,
+    rating: 1.36,
     team: 'Quazars',
     experience: 0,
     role: 'Fragger',
@@ -21,7 +21,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Modest',
-    rating: 1.44,
+    rating: 1.33,
     team: 'NOVA',
     experience: 0,
     role: 'Fragger',
@@ -30,7 +30,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Olaph',
-    rating: 1.43,
+    rating: 1.31,
     team: 'OG',
     experience: 0,
     role: 'Capitan',
@@ -39,7 +39,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Niko',
-    rating: 1.43,
+    rating: 1.3,
     team: 'NOVA',
     experience: 0,
     role: 'Fragger',
@@ -48,7 +48,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'bait',
-    rating: 1.39,
+    rating: 1.28,
     team: 'NOVA',
     experience: 0,
     role: 'Support',
@@ -57,7 +57,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Xantares',
-    rating: 1.36,
+    rating: 1.26,
     team: 'Quazars',
     experience: 0,
     role: 'Capitan',
@@ -66,7 +66,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Collector',
-    rating: 1.36,
+    rating: 1.25,
     team: 'Vangard',
     experience: 0,
     role: 'Fragger',
@@ -75,7 +75,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Nelo',
-    rating: 1.34,
+    rating: 1.23,
     team: 'OG',
     experience: 0,
     role: 'Fragger',
@@ -84,7 +84,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Refresh',
-    rating: 1.33,
+    rating: 1.22,
     team: 'NOVA',
     experience: 0,
     role: 'Support',
@@ -93,7 +93,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Rossander',
-    rating: 1.3,
+    rating: 1.2,
     team: 'OG',
     experience: 0,
     role: 'Fragger',
@@ -102,7 +102,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Rain',
-    rating: 1.28,
+    rating: 1.18,
     team: 'Quazars',
     experience: 0,
     role: 'Support',
@@ -111,7 +111,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Focus',
-    rating: 1.27,
+    rating: 1.17,
     team: 'OG',
     experience: 0,
     role: 'Fragger',
@@ -120,7 +120,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Salivan',
-    rating: 1.26,
+    rating: 1.16,
     team: 'Island',
     experience: 0,
     role: 'Capitan',
@@ -129,7 +129,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Fury',
-    rating: 1.25,
+    rating: 1.16,
     team: 'Vangard',
     experience: 0,
     role: 'Fragger',
@@ -138,7 +138,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Kscerato',
-    rating: 1.25,
+    rating: 1.15,
     team: 'Vangard',
     experience: 0,
     role: 'Capitan',
@@ -147,7 +147,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Torin',
-    rating: 1.24,
+    rating: 1.15,
     team: 'OG',
     experience: 0,
     role: 'Fragger',
@@ -156,7 +156,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Tenor',
-    rating: 1.24,
+    rating: 1.15,
     team: 'Vangard',
     experience: 0,
     role: 'Support',
@@ -165,7 +165,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Wong',
-    rating: 1.24,
+    rating: 1.15,
     team: 'Island',
     experience: 0,
     role: 'Fragger',
@@ -174,7 +174,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Cicada',
-    rating: 1.23,
+    rating: 1.14,
     team: 'Solid',
     experience: 0,
     role: 'Support',
@@ -183,7 +183,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Stoic',
-    rating: 1.23,
+    rating: 1.14,
     team: 'Vangard',
     experience: 0,
     role: 'Support',
@@ -192,7 +192,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Syrson',
-    rating: 1.22,
+    rating: 1.14,
     team: 'Island',
     experience: 0,
     role: 'Fragger',
@@ -201,7 +201,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'LoseIt',
-    rating: 1.22,
+    rating: 1.14,
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
@@ -210,7 +210,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Tabsen',
-    rating: 1.2,
+    rating: 1.14,
     team: 'Quazars',
     experience: 0,
     role: 'Fragger',
@@ -219,7 +219,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Cloudy',
-    rating: 1.2,
+    rating: 1.14,
     team: 'Quazars',
     experience: 0,
     role: 'Support',
@@ -228,7 +228,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Boros',
-    rating: 1.2,
+    rating: 1.13,
     team: 'Island',
     experience: 0,
     role: 'Fragger',
@@ -237,7 +237,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Kipito',
-    rating: 1.19,
+    rating: 1.13,
     team: 'TopGun',
     experience: 0,
     role: 'Support',
@@ -246,7 +246,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Leon',
-    rating: 1.18,
+    rating: 1.13,
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
@@ -255,7 +255,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Kosus',
-    rating: 1.18,
+    rating: 1.13,
     team: 'TopGun',
     experience: 0,
     role: 'Support',
@@ -264,7 +264,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Maden',
-    rating: 1.18,
+    rating: 1.12,
     team: 'TopGun',
     experience: 0,
     role: 'Capitan',
@@ -273,7 +273,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Mandarin',
-    rating: 1.17,
+    rating: 1.12,
     team: 'Solid',
     experience: 0,
     role: 'Support',
@@ -282,7 +282,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Raven',
-    rating: 1.17,
+    rating: 1.1,
     team: 'Jupiter',
     experience: 0,
     role: 'Fragger',
@@ -291,7 +291,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Faker',
-    rating: 1.26,
+    rating: 1.1,
     team: 'TopGun',
     experience: 0,
     role: 'Fragger',
@@ -300,7 +300,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Soul',
-    rating: 1.25,
+    rating: 1.1,
     team: 'TopGun',
     experience: 0,
     role: 'Fragger',
@@ -309,7 +309,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Faris',
-    rating: 1.25,
+    rating: 1.09,
     team: 'Solid',
     experience: 0,
     role: 'Capitan',
@@ -318,7 +318,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Melon',
-    rating: 1.24,
+    rating: 1.08,
     team: 'Island',
     experience: 0,
     role: 'Support',
@@ -327,7 +327,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Forest',
-    rating: 1.24,
+    rating: 1.08,
     team: 'Jupiter',
     experience: 0,
     role: 'Capitan',
@@ -336,7 +336,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'LoseIt',
-    rating: 1.24,
+    rating: 1.08,
     team: 'Solid',
     experience: 0,
     role: 'Fragger',
@@ -345,7 +345,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Somewhere',
-    rating: 1.23,
+    rating: 1.07,
     team: 'Solid',
     experience: 0,
     role: 'Fragger',
@@ -354,7 +354,7 @@ const playersDefault: Player[] = [
   },
   {
     nickName: 'Tabar',
-    rating: 1.23,
+    rating: 1.07,
     team: 'Jupiter',
     experience: 0,
     role: 'Support',

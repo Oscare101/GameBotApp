@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect } from 'react'
-import { Text, View } from 'react-native'
+import { StatusBar, Text, View } from 'react-native'
 import playersDefault from '../constants/playersDefault'
 import { useDispatch } from 'react-redux'
 import { updatePlayers } from '../redux/players'
@@ -28,7 +28,10 @@ export default function LaunchScreen({ navigation }: any) {
       )
       dispatch(updateTournaments(tournamentsDefault))
     }
-    navigation.navigate('NavigationApp')
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'NavigationApp' }],
+    })
   }
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export default function LaunchScreen({ navigation }: any) {
 
   return (
     <View>
+      <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
       <Text>Loading</Text>
     </View>
   )

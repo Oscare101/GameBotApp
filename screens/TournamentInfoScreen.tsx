@@ -3,6 +3,7 @@ import {
   FlatList,
   Modal,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,6 +23,7 @@ import { updateTeam2 } from '../redux/team2'
 import { GetMapsScore, GetScore } from '../functions/functions'
 import Main from './Main'
 import { clearLog } from '../redux/logs'
+import TeamsBig from '../components/TeamBig'
 
 const width = Dimensions.get('screen').width
 
@@ -39,7 +41,30 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
 
   const [grandSlamModal, setGrandSlamModal] = useState<boolean>(false)
 
+  function GetTeamsInPlaces() {
+    let teamsArr: any = []
+    if (tournament.grid) {
+      for (let i = tournament.grid.length - 1; i >= 0; i--) {
+        tournament.grid[i].forEach((pair: any) => {
+          if (!teamsArr.includes(pair.winner)) {
+            teamsArr.push(pair.winner)
+          }
+        })
+      }
+      GetTeams().forEach((team: any) => {
+        if (!teamsArr.includes(team)) {
+          teamsArr.push(team)
+        }
+      })
+      return teamsArr
+    } else {
+      return []
+    }
+  }
+
   function RenderBigPrizes({ item, index }: any) {
+    // const teamPlaces = GetTeamsInPlaces()
+
     return (
       <View
         style={{
@@ -52,6 +77,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: 5,
+          overflow: 'hidden',
         }}
       >
         <Text>
@@ -67,6 +93,18 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
             ? '9-16th'
             : ''}
         </Text>
+        {tournament.winner ? (
+          <>
+            <Text style={{ fontSize: 20, fontWeight: '500' }}>
+              {GetTeamsInPlaces()[index]}
+            </Text>
+            <View style={{ position: 'absolute', zIndex: -1, opacity: 0.1 }}>
+              <TeamsBig team={GetTeamsInPlaces()[index]} />
+            </View>
+          </>
+        ) : (
+          <></>
+        )}
         <Text style={{ fontSize: 20 }}>
           {item.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
         </Text>
@@ -420,7 +458,11 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
 
     return (
       <>
-        {tournament.grid ? showGrid : canStartTournament ? makeGrid : warning}
+        {tournament.grid.length
+          ? showGrid
+          : canStartTournament
+          ? makeGrid
+          : warning}
       </>
     )
   }
@@ -428,6 +470,8 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
       <View style={styles.container}>
+        <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
+
         <Text style={styles.tournamentName}>{tournament.name}</Text>
         <CupsBig cup={tournament.cup} />
         <Text style={styles.tournamentDescription}>

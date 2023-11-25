@@ -16,6 +16,7 @@ export interface Tournament {
   cup: number
   description: string
   grid?: any
+  points?: any[]
 }
 
 export interface Team {

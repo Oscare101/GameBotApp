@@ -1,6 +1,7 @@
 import {
   FlatList,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -40,6 +41,69 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
       500000
 
     return price
+  }
+
+  function GetTeams() {
+    let arr: any = []
+    players.forEach((player: any) => {
+      if (!arr.includes(player.team)) {
+        arr.push(player.team)
+      }
+    })
+    return arr
+  }
+
+  function GetTeamsInPlaces(tournament: any) {
+    let teamsArr: any = []
+    if (tournament.grid) {
+      for (let i = tournament.grid.length - 1; i >= 0; i--) {
+        tournament.grid[i].forEach((pair: any) => {
+          if (!teamsArr.includes(pair.winner)) {
+            teamsArr.push(pair.winner)
+          }
+        })
+      }
+      GetTeams().forEach((team: any) => {
+        if (!teamsArr.includes(team)) {
+          teamsArr.push(team)
+        }
+      })
+    }
+
+    return teamsArr
+  }
+
+  function GetTeamPrizes() {
+    let amountWon: number = 0
+    tournaments.forEach((t: any) => {
+      if (t.winner) {
+        const teamIndexInPlace = GetTeamsInPlaces(t).findIndex(
+          (i: any) => i === playerInfo.team
+        )
+        amountWon += t.prizes[teamIndexInPlace] || 0
+      }
+    })
+    return amountWon
+  }
+
+  function GetTeamPoints() {
+    let amountWon: number = 0
+    if (tournaments) {
+      const last7Tournaments =
+        tournaments.length > 7
+          ? tournaments.slice(tournaments.length - 7)
+          : tournaments
+      last7Tournaments.forEach((t: any) => {
+        if (t.winner) {
+          const teamIndexInPlace = GetTeamsInPlaces(t).findIndex(
+            (i: any) => i === playerInfo.team
+          )
+          amountWon += t.points[teamIndexInPlace] || 0
+        }
+      })
+    }
+
+    return amountWon
   }
 
   function RenderTrophies({ item }: any) {
@@ -90,6 +154,17 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
           renderItem={RenderPlayersTeam}
           scrollEnabled={false}
         />
+        <Text
+          style={{
+            width: '100%',
+            paddingLeft: '4%',
+
+            padding: 5,
+            marginTop: 5,
+          }}
+        >
+          Total prizes won: {GetTeamPrizes()} $ | points {GetTeamPoints()}
+        </Text>
 
         {tournaments.filter(
           (i: any) => i.winner && i.winner.team.name === playerInfo.team
@@ -228,6 +303,8 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
+        <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
+
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={0.8}
