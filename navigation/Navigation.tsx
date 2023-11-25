@@ -11,6 +11,7 @@ import Main from '../screens/Main'
 import TournamentsScreen from '../screens/TournamentsScreen'
 import TournamentInfoScreen from '../screens/TournamentInfoScreen'
 import LaunchScreen from '../screens/LaunchScreen'
+import PlayerInfoScreen from '../screens/PlayerInfoScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -190,6 +191,16 @@ export default function Navigation() {
         }}
         name="TournamentInfoScreen"
         component={TournamentInfoScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          gestureDirection: 'horizontal',
+          gestureEnabled: true,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+        name="PlayerInfoScreen"
+        component={PlayerInfoScreen}
       />
     </Stack.Navigator>
   )
