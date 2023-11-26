@@ -55,37 +55,33 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
   }
 
   function RenderTrophies({ item, index }: any) {
-    const chapionships = tournaments.filter(
-      (t: any) => t.winner && t.winner.team.name === playerInfo.team
-    ).length
-
-    // console.log(
-    //   tournaments
-    //     .filter((i: any) => i.winner && i.winner.team.name === playerInfo.team)
-    //     .reverse()[index - 3] &&
-    //     tournaments
-    //       .filter(
-    //         (i: any) => i.winner && i.winner.team.name === playerInfo.team
-    //       )
-    //       .reverse()[index - 3].season === item.season
-    // )
-
     return (
       <>
         {GetGrandSlamWinners(tournaments, players).find(
           (g: any) =>
             g.season === item.season && g.grandSlamWinner === playerInfo.team
         ) &&
-        tournaments
+        (tournaments
           .filter(
-            (i: any) => i.winner && i.winner.team.name === playerInfo.team
+            (i: any) =>
+              i.winner &&
+              i.winner.team.name === playerInfo.team &&
+              i.winner.team.players.find(
+                (i: any) => i.nickName === playerInfo.nickName
+              )
           )
-          .reverse()[index + chapionships - 1] &&
-        tournaments
-          .filter(
-            (i: any) => i.winner && i.winner.team.name === playerInfo.team
-          )
-          .reverse()[index + chapionships - 1].season === item.season ? (
+          .reverse()[index - 1] === undefined
+          ? index === 0
+          : tournaments
+              .filter(
+                (i: any) =>
+                  i.winner &&
+                  i.winner.team.name === playerInfo.team &&
+                  i.winner.team.players.find(
+                    (i: any) => i.nickName === playerInfo.nickName
+                  )
+              )
+              .reverse()[index - 1].season !== item.season) ? (
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
@@ -94,7 +90,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
             style={{
               padding: 10,
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'flex-end',
             }}
           >
             <Cups cup={8} />
@@ -111,7 +107,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
           style={{
             padding: 10,
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
           }}
         >
           <Cups cup={item.cup} />
@@ -305,14 +301,15 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
             <FlatList
               style={{ width: '100%', backgroundColor: '#fff' }}
               horizontal
-              data={tournaments.filter(
-                (i: any) =>
-                  i.winner &&
-                  i.winner.team.name === playerInfo.team &&
-                  i.winner.team.players.find(
-                    (i: any) => i.nickName === playerInfo.nickName
-                  )
-              )}
+              data={tournaments
+                .filter(
+                  (i: any) =>
+                    i.winner &&
+                    i.winner.team.players.find(
+                      (i: any) => i.nickName === playerInfo.nickName
+                    )
+                )
+                .reverse()}
               renderItem={RenderTrophies}
             />
           </>

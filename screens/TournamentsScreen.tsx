@@ -119,13 +119,6 @@ export default function TournamentsScreen({ navigation }: any) {
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
 
       <Text style={styles.screenTitle}>Tournaments</Text>
-
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        style={{ width: '100%' }}
-        data={GetTournamentsBySeason(tournaments)}
-        renderItem={RenderTournamentItem}
-      />
       {tournaments.find((t: any) => !t.winner) ? (
         <></>
       ) : (
@@ -143,6 +136,12 @@ export default function TournamentsScreen({ navigation }: any) {
           <Text style={{ fontSize: 28, color: '#fff' }}>Start new season</Text>
         </TouchableOpacity>
       )}
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        style={{ width: '100%' }}
+        data={GetTournamentsBySeason(tournaments)}
+        renderItem={RenderTournamentItem}
+      />
     </View>
   )
 }

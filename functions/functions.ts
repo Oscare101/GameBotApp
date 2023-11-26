@@ -393,8 +393,11 @@ export function GetTeamPointsLast7Tournaments(
   if (tournaments) {
     const last7Tournaments =
       tournaments.filter((t: any) => t.winner).length > 7
-        ? tournaments.filter((t: any) => t.winner).slice(tournaments.length - 7)
+        ? tournaments
+            .filter((t: any) => t.winner)
+            .slice(tournaments.filter((t: any) => t.winner).length - 7)
         : tournaments.filter((t: any) => t.winner)
+
     last7Tournaments.forEach((t: any) => {
       if (t.winner) {
         const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(

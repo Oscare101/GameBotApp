@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
 import { updateTeam1 } from '../redux/team1'
-import { Team } from '../constants/interfaces'
+import { Player, Team } from '../constants/interfaces'
 import { updateTeam2 } from '../redux/team2'
 import { clearLog, updateLog } from '../redux/logs'
 import {
@@ -19,6 +19,7 @@ import {
   GetEconomics,
   GetMapsScore,
   GetScore,
+  GetTeamRating,
   GetToolRandom,
   InstantGame,
   RandomPLayerToExecute,
@@ -33,7 +34,8 @@ import RenderRounds from '../components/RenderRounds'
 import { updatePlayers } from '../redux/players'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import rules from '../constants/rules'
-
+import ExplainingModal from '../components/ExplainingModal'
+import { Ionicons } from '@expo/vector-icons'
 const delay: any = 50 // milliseconds for every action
 const showLogs: boolean = false
 const showRounds: boolean = false
@@ -49,6 +51,7 @@ export default function Main(props: any) {
   const players = useSelector((state: RootState) => state.players)
 
   const [rounds, setRounds] = useState<number>(0)
+  const [explainingModal, setExplainingModal] = useState<boolean>(false)
 
   const dispatch = useDispatch()
 
@@ -63,14 +66,87 @@ export default function Main(props: any) {
     return arr
   }
 
-  async function AfterMatchPlayersDinamics() {
-    const newPlayersArr = GetSortedPlayersByRating().map((i: any) => {
+  async function AfterMatchPlayersDinamics(winnersArr: any) {
+    function RatingChange(rating: number) {
+      const change: number = Math.random() > 0.5 ? 0.01 : -0.01
+      const result: number = +(rating + change).toFixed(2)
+      return result
+    }
+
+    function MotivationChange(player: Player) {
+      const weakTeam =
+        GetTeamRating(team1) > GetTeamRating(team2) ? team2.name : team1.name
+      const winner =
+        GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
+          ? team1.name
+          : team2.name
+      const random: number = Math.random() > 0.5 ? 0.01 : -0.01
+
+      if (weakTeam === winner && player.team === weakTeam) {
+        if (player.motivation + 0.2 <= 1) {
+          return player.motivation + 0.2
+        } else {
+          return player.motivation
+        }
+      } else {
+        if (
+          player.motivation + random >= 0 &&
+          player.motivation + random <= 1
+        ) {
+          return player.motivation + random
+        } else {
+          return player.motivation
+        }
+      }
+    }
+
+    function TacticChange(player: Player) {
+      const randomWinner: number = Math.random() > 0.33 ? 0.01 : -0.01
+      const randomLoser: number = Math.random() > 0.66 ? 0.01 : -0.01
+
+      const winner =
+        GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
+          ? team1.name
+          : team2.name
+
+      if (player.team === winner) {
+        if (player.tactic + randomWinner <= 1) {
+          return player.tactic + randomWinner
+        } else {
+          return player.tactic
+        }
+      } else {
+        if (player.tactic + randomWinner >= 0) {
+          return player.tactic + randomLoser
+        } else {
+          return player.tactic
+        }
+      }
+    }
+
+    function ExperienceChange(experience: number) {
+      const random: boolean = Math.random() > 0.5
+      const change: number = Math.random() > 0.5 ? 0.01 : -0.01
+
+      if (random) {
+        if (experience + change <= 1 && experience + change >= 0) {
+          return experience + change
+        } else {
+          return experience
+        }
+      } else {
+        return experience
+      }
+    }
+
+    const newPlayersArr = GetSortedPlayersByRating().map((i: Player) => {
       if (i.team === team1.name || i.team === team2.name) {
         return {
           ...i,
-          rating: +(
-            Math.random() > 0.5 ? i.rating + 0.01 : i.rating - 0.01
-          ).toFixed(2),
+          rating: +RatingChange(i.rating).toFixed(2),
+          motivation: +MotivationChange(i).toFixed(2),
+          tactic: +TacticChange(i).toFixed(2),
+          experience: +ExperienceChange(i.experience).toFixed(2),
         }
       } else {
         return i
@@ -107,45 +183,10 @@ export default function Main(props: any) {
               GetMapsScore(team2, winnersArr) === Math.floor(bestOf / 2 + 1)
             ) {
               clearInterval(intervalId)
-              await AfterMatchPlayersDinamics()
+              await AfterMatchPlayersDinamics(winnersArr)
 
               setGameIsActive(false)
               props.onWinners(team1, team2, winnersArr)
-
-              // if (
-              //   GetMapsScore(team1, winnersArr) >
-              //   GetMapsScore(team2, winnersArr)
-              // ) {
-              //   const newPlayersArr = GetSortedPlayersByRating().map(
-              //     (i: any) => {
-              //       if (i.team === team1.name) {
-              //         return { ...i, tactic: i.tactic + 0.01 }
-              //       } else {
-              //         return i
-              //       }
-              //     }
-              //   )
-              //   dispatch(updatePlayers(newPlayersArr))
-              //   await AsyncStorage.setItem(
-              //     'players',
-              //     JSON.stringify(newPlayersArr)
-              //   )
-              // } else {
-              //   const newPlayersArr = GetSortedPlayersByRating().map(
-              //     (i: any) => {
-              //       if (i.team === team2.name) {
-              //         return { ...i, tactic: i.tactic + 0.01 }
-              //       } else {
-              //         return i
-              //       }
-              //     }
-              //   )
-              //   dispatch(updatePlayers(newPlayersArr))
-              //   await AsyncStorage.setItem(
-              //     'players',
-              //     JSON.stringify(newPlayersArr)
-              //   )
-              // }
             } else {
               StartTheNewMap()
             }
@@ -476,9 +517,7 @@ export default function Main(props: any) {
           ></View>
         </View>
       </View>
-      <View
-        style={{ width: '100%', flex: 1, padding: 10, alignItems: 'center' }}
-      >
+      <View style={{ width: '100%', padding: 10, alignItems: 'center' }}>
         {!gameIsActive && team1.name && team2.name && !log.length ? (
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity
@@ -535,6 +574,20 @@ export default function Main(props: any) {
         )}
         <RenderRounds showRounds={showRounds} />
       </View>
+      <TouchableOpacity
+        style={{ flexDirection: 'row', alignItems: 'center' }}
+        activeOpacity={0.8}
+        onPress={() => setExplainingModal(true)}
+      >
+        <Text style={{ fontSize: 20, marginRight: 5 }}>
+          How do matches work
+        </Text>
+        <Ionicons name="open-outline" size={24} color="black" />
+      </TouchableOpacity>
+      <ExplainingModal
+        visible={explainingModal}
+        onClose={() => setExplainingModal(false)}
+      />
     </View>
   )
 }

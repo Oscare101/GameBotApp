@@ -82,7 +82,7 @@ export default function ScoreBlock(props: any) {
       </Text>
 
       <View style={styles.header}>
-        <TouchableOpacity
+        <View
           style={{
             width: '40%',
             flexDirection: 'row',
@@ -94,14 +94,6 @@ export default function ScoreBlock(props: any) {
                 ? 0.5
                 : 1
               : 0.3,
-          }}
-          activeOpacity={0.8}
-          onPress={() => {
-            if (props.gameIsActive) {
-              return false
-            } else {
-              setTeam1Modal(true)
-            }
           }}
         >
           {team1.name ? <Teams team={team1.name} /> : <></>}
@@ -117,53 +109,7 @@ export default function ScoreBlock(props: any) {
           >
             {team1.name || 'team 1'}
           </Text>
-        </TouchableOpacity>
-        <Modal
-          visible={team1Modal}
-          transparent
-          style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
-        >
-          <View
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              activeOpacity={1}
-              onPress={() => setTeam1Modal(false)}
-            >
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 20,
-                  left: 20,
-                  backgroundColor: '#fff',
-                  elevation: 5,
-                  padding: 10,
-                  borderRadius: 5,
-                }}
-              >
-                <FlatList
-                  data={GetTeams(players).filter(
-                    (team: any) => team !== team2.name
-                  )}
-                  renderItem={RenderTeams}
-                  ItemSeparatorComponent={() => (
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#eee',
-                      }}
-                    />
-                  )}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+        </View>
 
         <View
           style={{
@@ -269,7 +215,7 @@ export default function ScoreBlock(props: any) {
           </View>
         </View>
 
-        <TouchableOpacity
+        <View
           style={{
             width: '40%',
             flexDirection: 'row',
@@ -281,14 +227,6 @@ export default function ScoreBlock(props: any) {
                 ? 0.5
                 : 1
               : 0.3,
-          }}
-          activeOpacity={0.8}
-          onPress={() => {
-            if (props.gameIsActive) {
-              return false
-            } else {
-              setTeam2Modal(true)
-            }
           }}
         >
           <Text
@@ -305,54 +243,7 @@ export default function ScoreBlock(props: any) {
             {team2.name || 'team 2'}
           </Text>
           {team2.name ? <Teams team={team2.name} /> : <></>}
-        </TouchableOpacity>
-
-        <Modal
-          visible={team2Modal}
-          transparent
-          style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
-        >
-          <View
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              activeOpacity={1}
-              onPress={() => setTeam2Modal(false)}
-            >
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 20,
-                  right: 20,
-                  backgroundColor: '#fff',
-                  elevation: 5,
-                  padding: 10,
-                  borderRadius: 5,
-                }}
-              >
-                <FlatList
-                  data={GetTeams(players).filter(
-                    (team: any) => team !== team1.name
-                  )}
-                  renderItem={RenderTeams}
-                  ItemSeparatorComponent={() => (
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#eee',
-                      }}
-                    />
-                  )}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+        </View>
       </View>
     </>
   )

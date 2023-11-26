@@ -75,6 +75,12 @@ export default function TeamsScreen({ navigation }: any) {
           overflow: 'hidden',
           paddingHorizontal: 15,
         }}
+        activeOpacity={0.8}
+        onPress={() => {
+          navigation.navigate('PlayerInfoScreen', {
+            player: players.filter((p: any) => p.team === item.name)[0],
+          })
+        }}
       >
         {/* <View style={{ position: 'absolute', zIndex: -1, opacity: 0.1 }}>
           <TeamsBig team={item.name} />
@@ -118,7 +124,6 @@ export default function TeamsScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text>Teams</Text>
       <FlatList
         style={{ width: '92%' }}
         data={

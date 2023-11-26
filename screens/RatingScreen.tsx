@@ -22,10 +22,10 @@ export default function RatingScreen({ navigation }: any) {
           backgroundColor: '#fff',
         },
       }}
-      initialRouteName={'PlayersScreen'}
+      initialRouteName={'Players'}
     >
-      <Tab.Screen name={'PlayersScreen'} component={PlayersScreen} />
-      <Tab.Screen name={'TeamsScreen'} component={TeamsScreen} />
+      <Tab.Screen name={'Players'} component={PlayersScreen} />
+      <Tab.Screen name={'Teams'} component={TeamsScreen} />
     </Tab.Navigator>
   )
 }

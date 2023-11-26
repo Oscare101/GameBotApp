@@ -211,9 +211,9 @@ export default function Navigation() {
       <Stack.Screen
         options={{
           headerShown: false,
-          gestureDirection: 'horizontal',
-          gestureEnabled: true,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          // gestureDirection: 'horizontal',
+          // gestureEnabled: true,
+          // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
         name="PlayerInfoScreen"
         component={PlayerInfoScreen}
