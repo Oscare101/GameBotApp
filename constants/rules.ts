@@ -3,4 +3,7 @@ export default {
   tactickDecreaseAfterWin: 0.01,
   tactickIncreaseChance: 0.5,
   tactickDecreaseChance: 0.5,
+
+  grandSlamBar: 4,
+  grandSlamPrize: 1000000,
 }

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 import colors from '../constants/colors'
-import { GetMapsScore, GetScore } from '../functions/functions'
+import { GetMapsScore, GetScore, GetTeams } from '../functions/functions'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
 import { useState } from 'react'
@@ -26,16 +26,6 @@ export default function ScoreBlock(props: any) {
   const dispatch = useDispatch()
   const [team1Modal, setTeam1Modal] = useState<boolean>(false)
   const [team2Modal, setTeam2Modal] = useState<boolean>(false)
-
-  function GetTeams() {
-    let arr: any = []
-    players.forEach((player: any) => {
-      if (!arr.includes(player.team)) {
-        arr.push(player.team)
-      }
-    })
-    return arr
-  }
 
   function RenderTeams({ item }: any) {
     return (
@@ -100,7 +90,7 @@ export default function ScoreBlock(props: any) {
             justifyContent: 'flex-start',
             opacity: team1.name
               ? GetMapsScore(team2, mapPoints) ===
-                Math.floor(props.bestOf / 2 + 1)
+                  Math.floor(props.bestOf / 2 + 1) && props.gameIsActive
                 ? 0.5
                 : 1
               : 0.3,
@@ -156,7 +146,9 @@ export default function ScoreBlock(props: any) {
                 }}
               >
                 <FlatList
-                  data={GetTeams().filter((team: any) => team !== team2.name)}
+                  data={GetTeams(players).filter(
+                    (team: any) => team !== team2.name
+                  )}
                   renderItem={RenderTeams}
                   ItemSeparatorComponent={() => (
                     <View
@@ -237,7 +229,8 @@ export default function ScoreBlock(props: any) {
                       height: 7,
                       width: '100%',
                       backgroundColor:
-                        GetMapsScore(team1, mapPoints) > index
+                        GetMapsScore(team1, mapPoints) > index &&
+                        props.gameIsActive
                           ? colors.team1NameColor
                           : '#eee',
                       marginBottom: 5,
@@ -262,7 +255,8 @@ export default function ScoreBlock(props: any) {
                       height: 7,
                       width: '100%',
                       backgroundColor:
-                        GetMapsScore(team2, mapPoints) > index
+                        GetMapsScore(team2, mapPoints) > index &&
+                        props.gameIsActive
                           ? colors.team2NameColor
                           : '#eee',
                       marginBottom: 5,
@@ -283,7 +277,7 @@ export default function ScoreBlock(props: any) {
             justifyContent: 'flex-end',
             opacity: team2.name
               ? GetMapsScore(team1, mapPoints) ===
-                Math.floor(props.bestOf / 2 + 1)
+                  Math.floor(props.bestOf / 2 + 1) && props.gameIsActive
                 ? 0.5
                 : 1
               : 0.3,
@@ -341,7 +335,9 @@ export default function ScoreBlock(props: any) {
                 }}
               >
                 <FlatList
-                  data={GetTeams().filter((team: any) => team !== team1.name)}
+                  data={GetTeams(players).filter(
+                    (team: any) => team !== team1.name
+                  )}
                   renderItem={RenderTeams}
                   ItemSeparatorComponent={() => (
                     <View

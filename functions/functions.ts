@@ -1,4 +1,5 @@
 import { Player } from '../constants/interfaces'
+import rules from '../constants/rules'
 
 export function GetTeamRating(team: any) {
   let teamMotivationValue = 1 + (team.motivation || 0 * 20) / 100
@@ -293,4 +294,172 @@ export function GetSortedPlayersByRoles(players: Player[]) {
   })
   arr.sort((a: any, b: any) => a.role.localeCompare(b.role))
   return arr
+}
+
+export function GetTeams(players: Player[]) {
+  let arr: any = []
+  players.forEach((player: any) => {
+    if (!arr.includes(player.team)) {
+      arr.push(player.team)
+    }
+  })
+  return arr
+}
+
+export function GetTeamsInPlaces(tournament: any, players: Player[]) {
+  let teamsArr: any = []
+  if (tournament.grid) {
+    for (let i = tournament.grid.length - 1; i >= 0; i--) {
+      tournament.grid[i].forEach((pair: any) => {
+        if (!teamsArr.includes(pair.winner)) {
+          teamsArr.push(pair.winner)
+        }
+      })
+    }
+    GetTeams(players).forEach((team: any) => {
+      if (!teamsArr.includes(team)) {
+        teamsArr.push(team)
+      }
+    })
+  }
+
+  return teamsArr
+}
+
+export function GetGrandSlamWinners(tournaments: any, players: Player[]) {
+  let grandSlamSeasons: any[] = []
+
+  tournaments
+    .filter((t: any) => t.winner)
+    .forEach((t: any) => {
+      if (grandSlamSeasons.find((g: any) => g.season === t.season)) {
+        grandSlamSeasons = grandSlamSeasons.map((g: any, index: number) => {
+          if (g.season === t.season) {
+            return {
+              ...g,
+              winners: [...grandSlamSeasons[index].winners, t.winner.team.name],
+            }
+          } else {
+            return g
+          }
+        })
+      } else {
+        grandSlamSeasons.push({
+          season: t.season,
+          winners: [t.winner.team.name],
+        })
+      }
+    })
+  const grandSlamWinners: any = []
+
+  grandSlamSeasons.forEach((g: any) => {
+    GetTeams(players).forEach((team: string) => {
+      if (
+        g.winners.filter((w: string) => w === team).length >= rules.grandSlamBar
+      ) {
+        grandSlamWinners.push({ season: g.season, grandSlamWinner: team })
+      }
+    })
+  })
+  return grandSlamWinners
+}
+
+export function GetTeamPoints(
+  tournaments: any,
+  players: Player[],
+  team: string
+) {
+  let amountWon: number = 0
+  if (tournaments) {
+    tournaments.forEach((t: any) => {
+      if (t.winner) {
+        const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(
+          (i: any) => i === team
+        )
+        amountWon += t.points[teamIndexInPlace] || 0
+      }
+    })
+  }
+
+  return amountWon
+}
+
+export function GetTeamPointsLast7Tournaments(
+  tournaments: any,
+  players: Player[],
+  team: string
+) {
+  let amountWon: number = 0
+  if (tournaments) {
+    const last7Tournaments =
+      tournaments.filter((t: any) => t.winner).length > 7
+        ? tournaments.filter((t: any) => t.winner).slice(tournaments.length - 7)
+        : tournaments.filter((t: any) => t.winner)
+    last7Tournaments.forEach((t: any) => {
+      if (t.winner) {
+        const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(
+          (i: any) => i === team
+        )
+        amountWon += t.points[teamIndexInPlace] || 0
+      }
+    })
+  }
+
+  return amountWon
+}
+
+export function GetTeamWinRate(tournaments: any, team: string) {
+  let gamesWon: number = 0
+  let gamesTookPart: number = 0
+  tournaments.forEach((t: any) => {
+    t.grid.forEach((g: any) => {
+      g.forEach((pair: any) => {
+        if ((pair.team1 === team || pair.team2 === team) && pair.winner) {
+          gamesTookPart++
+          if (pair.winner === team) {
+            gamesWon++
+          }
+        }
+      })
+    })
+  })
+
+  return +((gamesWon / gamesTookPart) * 100).toFixed()
+}
+
+export function GetTeamPrizes(
+  tournaments: any,
+  players: Player[],
+  team: string
+) {
+  const grandSlams = GetGrandSlamWinners(tournaments, players).filter(
+    (g: any) => g.grandSlamWinner === team
+  ).length
+
+  let amountWon: number = 0
+  tournaments.forEach((t: any) => {
+    if (t.winner) {
+      const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(
+        (i: any) => i === team
+      )
+      amountWon += t.prizes[teamIndexInPlace] || 0
+    }
+  })
+  return amountWon + grandSlams * rules.grandSlamPrize
+}
+
+export function GetTournamentsBySeason(tournaments: any) {
+  const tArr: any = []
+  tournaments.map((t: any) => {
+    if (!tArr.length) {
+      tArr.push(t)
+    } else {
+      if (t.season !== tArr[0].season) {
+        tArr.unshift(t)
+      } else {
+        tArr.splice(t.cup - 1, 0, t)
+      }
+    }
+  })
+  return tArr
 }

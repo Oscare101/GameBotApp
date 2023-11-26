@@ -7,63 +7,110 @@ import {
   View,
 } from 'react-native'
 import Cups from '../components/Cups'
-import { TheGrandSlamCup } from '../constants/icons'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
 import Teams from '../components/Teams'
+import tournamentsDefault from '../constants/tournamentsDefault'
+import { updateTournaments } from '../redux/tournaments'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { GetTournamentsBySeason } from '../functions/functions'
 
 export default function TournamentsScreen({ navigation }: any) {
-  const tournaments = useSelector((state: RootState) => state.tournaments)
+  const tournaments: any = useSelector((state: RootState) => state.tournaments)
+  const dispatch = useDispatch()
 
-  function RenderTournamentItem({ item }: any) {
+  async function StartNewSeason() {
+    const newSeason = tournamentsDefault.map((t: any) => {
+      return {
+        ...t,
+        season: tournaments[tournaments.length - 1].season + 1,
+      }
+    })
+    const newTournaments = tournaments.concat(newSeason)
+    dispatch(updateTournaments(newTournaments))
+    AsyncStorage.setItem('tournaments', JSON.stringify(newTournaments))
+  }
+
+  function RenderTournamentItem({ item, index }: any) {
     const sum = item.prizes.reduce(function (a: any, b: any) {
       return a + b
     })
     return (
-      <TouchableOpacity
-        style={[styles.tournamentBlock]}
-        activeOpacity={0.8}
-        onPress={() =>
-          navigation.navigate('TournamentInfoScreen', { tournament: item })
-        }
-      >
-        <View style={styles.tournamentsTopInfo}>
-          <Text style={styles.tournamentName}>{item.name}</Text>
-          <Text style={styles.season}>Season {item.season}</Text>
-        </View>
-        <View style={styles.tournamentsInfoBlock}>
+      <>
+        {index === 0 ||
+        GetTournamentsBySeason(tournaments)[index - 1].season !==
+          item.season ? (
           <View
             style={{
-              width: '20%',
+              width: '92%',
+              flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
+              alignSelf: 'center',
             }}
           >
-            <Cups cup={item.cup} />
-          </View>
-          <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
-            <Text style={styles.tournamentsInfoTitle}>
-              {sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
+            <View style={{ flex: 1, height: 1, backgroundColor: '#666' }} />
+            <Text
+              style={{
+                fontSize: 20,
+                padding: 5,
+                color: '#666',
+                fontWeight: '400',
+                letterSpacing: 1,
+              }}
+            >
+              season {item.season}
             </Text>
-            <Text style={styles.tournamentsInfoName}>Prize</Text>
+            <View style={{ flex: 1, height: 1, backgroundColor: '#666' }} />
           </View>
-          <View style={[styles.tournamentsInfoCell, { width: '20%' }]}>
-            <Text style={styles.tournamentsInfoTitle}>
-              {item.prizes.length}
-            </Text>
-            <Text style={styles.tournamentsInfoName}>Teams</Text>
+        ) : (
+          <></>
+        )}
+        <TouchableOpacity
+          style={[styles.tournamentBlock]}
+          activeOpacity={0.8}
+          onPress={() =>
+            navigation.navigate('TournamentInfoScreen', { tournament: item })
+          }
+        >
+          <View style={styles.tournamentsTopInfo}>
+            <Text style={styles.tournamentName}>{item.name}</Text>
+            <Text style={styles.season}>Season {item.season}</Text>
           </View>
-          <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
-            {item.winner ? (
-              <Teams team={item.winner.team.name} />
-            ) : (
-              <Text style={styles.tournamentsInfoTitle}>?</Text>
-            )}
+          <View style={styles.tournamentsInfoBlock}>
+            <View
+              style={{
+                width: '20%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Cups cup={item.cup} />
+            </View>
+            <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
+              <Text style={styles.tournamentsInfoTitle}>
+                {sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
+              </Text>
+              <Text style={styles.tournamentsInfoName}>Prize</Text>
+            </View>
+            <View style={[styles.tournamentsInfoCell, { width: '20%' }]}>
+              <Text style={styles.tournamentsInfoTitle}>
+                {item.prizes.length}
+              </Text>
+              <Text style={styles.tournamentsInfoName}>Teams</Text>
+            </View>
+            <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
+              {item.winner ? (
+                <Teams team={item.winner.team.name} />
+              ) : (
+                <Text style={styles.tournamentsInfoTitle}>?</Text>
+              )}
 
-            <Text style={styles.tournamentsInfoName}>Winner</Text>
+              <Text style={styles.tournamentsInfoName}>Winner</Text>
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </>
     )
   }
 
@@ -76,9 +123,26 @@ export default function TournamentsScreen({ navigation }: any) {
       <FlatList
         showsVerticalScrollIndicator={false}
         style={{ width: '100%' }}
-        data={tournaments}
+        data={GetTournamentsBySeason(tournaments)}
         renderItem={RenderTournamentItem}
       />
+      {tournaments.find((t: any) => !t.winner) ? (
+        <></>
+      ) : (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={StartNewSeason}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10,
+            backgroundColor: '#9dbef2',
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 28, color: '#fff' }}>Start new season</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

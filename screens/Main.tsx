@@ -34,7 +34,7 @@ import { updatePlayers } from '../redux/players'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import rules from '../constants/rules'
 
-const delay: any = 10 // milliseconds for every action
+const delay: any = 50 // milliseconds for every action
 const showLogs: boolean = false
 const showRounds: boolean = false
 const bestOf: number = 3
@@ -63,6 +63,23 @@ export default function Main(props: any) {
     return arr
   }
 
+  async function AfterMatchPlayersDinamics() {
+    const newPlayersArr = GetSortedPlayersByRating().map((i: any) => {
+      if (i.team === team1.name || i.team === team2.name) {
+        return {
+          ...i,
+          rating: +(
+            Math.random() > 0.5 ? i.rating + 0.01 : i.rating - 0.01
+          ).toFixed(2),
+        }
+      } else {
+        return i
+      }
+    })
+    dispatch(updatePlayers(newPlayersArr))
+    await AsyncStorage.setItem('players', JSON.stringify(newPlayersArr))
+  }
+
   useEffect(() => {
     if (gameIsActive) {
       const intervalId = setInterval(async () => {
@@ -89,25 +106,10 @@ export default function Main(props: any) {
               GetMapsScore(team1, winnersArr) === Math.floor(bestOf / 2 + 1) ||
               GetMapsScore(team2, winnersArr) === Math.floor(bestOf / 2 + 1)
             ) {
-              setGameIsActive(false)
               clearInterval(intervalId)
-              const newPlayersArr = GetSortedPlayersByRating().map((i: any) => {
-                if (i.team === team1.name || i.team === team2.name) {
-                  return {
-                    ...i,
-                    rating: +(
-                      Math.random() > 0.5 ? i.rating + 0.01 : i.rating - 0.01
-                    ).toFixed(2),
-                  }
-                } else {
-                  return i
-                }
-              })
-              dispatch(updatePlayers(newPlayersArr))
-              await AsyncStorage.setItem(
-                'players',
-                JSON.stringify(newPlayersArr)
-              )
+              await AfterMatchPlayersDinamics()
+
+              setGameIsActive(false)
               props.onWinners(team1, team2, winnersArr)
 
               // if (

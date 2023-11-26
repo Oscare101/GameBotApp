@@ -4,14 +4,15 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { TouchableOpacity, View, useColorScheme } from 'react-native'
+import { Text, TouchableOpacity, View, useColorScheme } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import PlayersScreen from '../screens/PlayersScreen'
-import Main from '../screens/Main'
 import TournamentsScreen from '../screens/TournamentsScreen'
 import TournamentInfoScreen from '../screens/TournamentInfoScreen'
 import LaunchScreen from '../screens/LaunchScreen'
 import PlayerInfoScreen from '../screens/PlayerInfoScreen'
+import RatingScreen from '../screens/RatingScreen'
+import TeamsScreen from '../screens/TeamsScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -20,12 +21,12 @@ export default function Navigation() {
   function TabBar({ state, navigation }: any) {
     const bottomTabData = [
       {
-        title: '',
+        title: 'Rating',
         iconActive: 'person-circle-sharp',
         iconInactive: 'person-circle-outline',
         action: () => {
-          navigation.navigate('PlayersNavigation', {
-            screen: 'PlayersScreen',
+          navigation.navigate('RatingNavigation', {
+            screen: 'RatingScreen',
             initial: false,
           })
         },
@@ -42,7 +43,7 @@ export default function Navigation() {
       //   },
       // },
       {
-        title: '',
+        title: 'Tournaments',
         iconActive: 'rocket',
         iconInactive: 'rocket-outline',
         action: () => {
@@ -87,6 +88,7 @@ export default function Navigation() {
             ) : (
               <Ionicons name={item.iconInactive} size={24} color={'#000'} />
             )}
+            <Text>{item.title}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -121,15 +123,29 @@ export default function Navigation() {
   //   )
   // }
 
-  function PlayersNavigation() {
+  function RatingNavigation() {
     return (
       <Stack.Navigator>
         <Stack.Screen
           options={{
             headerShown: false,
           }}
+          name="RatingScreen"
+          component={RatingScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
           name="PlayersScreen"
           component={PlayersScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="TeamsScreen"
+          component={TeamsScreen}
         />
       </Stack.Navigator>
     )
@@ -139,8 +155,8 @@ export default function Navigation() {
     return (
       <Tab.Navigator tabBar={(props: any) => <TabBar {...props} />}>
         <Tab.Screen
-          name="PlayersNavigation"
-          component={PlayersNavigation}
+          name="RatingNavigation"
+          component={RatingNavigation}
           options={{
             headerShown: false,
           }}

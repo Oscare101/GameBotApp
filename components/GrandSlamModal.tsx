@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { TheGrandSlamCupBig } from '../constants/icons'
+import rules from '../constants/rules'
 
 const width = Dimensions.get('window').width
 
@@ -35,7 +36,10 @@ export default function GrandSlamModal(props: any) {
           <TheGrandSlamCupBig />
           <Text style={styles.description}>
             The team that wins the most tournaments in a season, namely 4 or
-            more, receives a special status, a grand slam champion and 1.000.000
+            more, receives a special status, a grand slam champion and{' '}
+            {rules.grandSlamPrize
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
             $
           </Text>
         </View>

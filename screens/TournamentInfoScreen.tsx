@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Team, Tournament } from '../constants/interfaces'
 import { updateTeam1 } from '../redux/team1'
 import { updateTeam2 } from '../redux/team2'
-import { GetMapsScore, GetScore } from '../functions/functions'
+import { GetMapsScore, GetScore, GetTeams } from '../functions/functions'
 import Main from './Main'
 import { clearLog } from '../redux/logs'
 import TeamsBig from '../components/TeamBig'
@@ -51,7 +51,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
           }
         })
       }
-      GetTeams().forEach((team: any) => {
+      GetTeams(players).forEach((team: any) => {
         if (!teamsArr.includes(team)) {
           teamsArr.push(team)
         }
@@ -112,16 +112,6 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
     )
   }
 
-  function GetTeams() {
-    let arr: any = []
-    players.forEach((player: any) => {
-      if (!arr.includes(player.team)) {
-        arr.push(player.team)
-      }
-    })
-    return arr
-  }
-
   async function MatchWinnerFunc(t1: any, t2: any, value: any) {
     const tournamenIndex = tournaments.findIndex(function (i) {
       return i.name === tournament.name && i.season === tournament.season
@@ -172,8 +162,9 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
         setTournament({
           ...i,
           grid: newTournamentGrid,
-          winner: newTournamentGrid[newTournamentGrid.length - 1].winner
-            ? newTournamentGrid[newTournamentGrid.length - 1].winner === t1.name
+          winner: newTournamentGrid[newTournamentGrid.length - 1][0].winner
+            ? newTournamentGrid[newTournamentGrid.length - 1][0].winner ===
+              t1.name
               ? { team: t1 }
               : { team: t2 }
             : '',
@@ -212,8 +203,8 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
   }
 
   async function StartTheTournament() {
-    const teamAmount = GetTeams().length
-    const shufffledTeams = ShuffleTeams(GetTeams())
+    const teamAmount = GetTeams(players).length
+    const shufffledTeams = ShuffleTeams(GetTeams(players))
 
     const gridLevels = Math.log2(teamAmount)
     let gridArr: any = []

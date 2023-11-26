@@ -11,17 +11,28 @@ import TeamsBig from '../components/TeamBig'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../redux'
-import { GetSortedPlayersByRating } from '../functions/functions'
+import {
+  GetGrandSlamWinners,
+  GetSortedPlayersByRating,
+  GetTeamPoints,
+  GetTeamPointsLast7Tournaments,
+  GetTeamPrizes,
+  GetTeamWinRate,
+  GetTeams,
+  GetTeamsInPlaces,
+} from '../functions/functions'
 import { Ionicons } from '@expo/vector-icons'
 import PlayerStatSegments from '../components/PlayerStatSegments'
 import Cups from '../components/Cups'
 import Teams from '../components/Teams'
+import GrandSlamModal from '../components/GrandSlamModal'
 
 export default function PlayerInfoScreen({ navigation, route }: any) {
   const players = useSelector((state: RootState) => state.players)
   const tournaments = useSelector((state: RootState) => state.tournaments)
 
   const [playerInfo, setPlayerInfo] = useState<any>(route.params.player)
+  const [grandSlamModal, setGrandSlamModal] = useState<boolean>(false)
 
   function PlayerPriceKoef(rating: number) {
     const topPercent =
@@ -43,81 +54,70 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
     return price
   }
 
-  function GetTeams() {
-    let arr: any = []
-    players.forEach((player: any) => {
-      if (!arr.includes(player.team)) {
-        arr.push(player.team)
-      }
-    })
-    return arr
-  }
+  function RenderTrophies({ item, index }: any) {
+    const chapionships = tournaments.filter(
+      (t: any) => t.winner && t.winner.team.name === playerInfo.team
+    ).length
 
-  function GetTeamsInPlaces(tournament: any) {
-    let teamsArr: any = []
-    if (tournament.grid) {
-      for (let i = tournament.grid.length - 1; i >= 0; i--) {
-        tournament.grid[i].forEach((pair: any) => {
-          if (!teamsArr.includes(pair.winner)) {
-            teamsArr.push(pair.winner)
-          }
-        })
-      }
-      GetTeams().forEach((team: any) => {
-        if (!teamsArr.includes(team)) {
-          teamsArr.push(team)
-        }
-      })
-    }
+    // console.log(
+    //   tournaments
+    //     .filter((i: any) => i.winner && i.winner.team.name === playerInfo.team)
+    //     .reverse()[index - 3] &&
+    //     tournaments
+    //       .filter(
+    //         (i: any) => i.winner && i.winner.team.name === playerInfo.team
+    //       )
+    //       .reverse()[index - 3].season === item.season
+    // )
 
-    return teamsArr
-  }
-
-  function GetTeamPrizes() {
-    let amountWon: number = 0
-    tournaments.forEach((t: any) => {
-      if (t.winner) {
-        const teamIndexInPlace = GetTeamsInPlaces(t).findIndex(
-          (i: any) => i === playerInfo.team
-        )
-        amountWon += t.prizes[teamIndexInPlace] || 0
-      }
-    })
-    return amountWon
-  }
-
-  function GetTeamPoints() {
-    let amountWon: number = 0
-    if (tournaments) {
-      const last7Tournaments =
-        tournaments.length > 7
-          ? tournaments.slice(tournaments.length - 7)
-          : tournaments
-      last7Tournaments.forEach((t: any) => {
-        if (t.winner) {
-          const teamIndexInPlace = GetTeamsInPlaces(t).findIndex(
-            (i: any) => i === playerInfo.team
-          )
-          amountWon += t.points[teamIndexInPlace] || 0
-        }
-      })
-    }
-
-    return amountWon
-  }
-
-  function RenderTrophies({ item }: any) {
     return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => {
-          navigation.navigate('TournamentInfoScreen', { tournament: item })
-        }}
-        style={{ padding: 20, alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Cups cup={item.cup} />
-        <Text>Season {item.season}</Text>
-      </TouchableOpacity>
+      <>
+        {GetGrandSlamWinners(tournaments, players).find(
+          (g: any) =>
+            g.season === item.season && g.grandSlamWinner === playerInfo.team
+        ) &&
+        tournaments
+          .filter(
+            (i: any) => i.winner && i.winner.team.name === playerInfo.team
+          )
+          .reverse()[index + chapionships - 1] &&
+        tournaments
+          .filter(
+            (i: any) => i.winner && i.winner.team.name === playerInfo.team
+          )
+          .reverse()[index + chapionships - 1].season === item.season ? (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              setGrandSlamModal(true)
+            }}
+            style={{
+              padding: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Cups cup={8} />
+            <Text>Season {item.season}</Text>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate('TournamentInfoScreen', { tournament: item })
+          }}
+          style={{
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Cups cup={item.cup} />
+          <Text>Season {item.season}</Text>
+        </TouchableOpacity>
+      </>
     )
   }
 
@@ -141,6 +141,47 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
     )
   }
 
+  function TeamStat() {
+    return (
+      <View style={styles.teamStatBlock}>
+        <View style={styles.columnCenter}>
+          <Text style={styles.teamStatTitle}>Total prizes won</Text>
+          <Text style={styles.teamStatValue}>
+            {GetTeamPrizes(tournaments, players, playerInfo.team)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
+            $
+          </Text>
+        </View>
+        <View style={styles.teamStatSeparator} />
+        <View style={styles.columnCenter}>
+          <Text style={styles.teamStatTitle}>Total points</Text>
+          <Text style={styles.teamStatValue}>
+            {GetTeamPoints(tournaments, players, playerInfo.team)}
+          </Text>
+        </View>
+        <View style={styles.teamStatSeparator} />
+        <View style={styles.columnCenter}>
+          <Text style={styles.teamStatTitle}>Points (yearly)</Text>
+          <Text style={styles.teamStatValue}>
+            {GetTeamPointsLast7Tournaments(
+              tournaments,
+              players,
+              playerInfo.team
+            )}
+          </Text>
+        </View>
+        <View style={styles.teamStatSeparator} />
+        <View style={styles.columnCenter}>
+          <Text style={styles.teamStatTitle}>Win rate</Text>
+          <Text style={styles.teamStatValue}>
+            {GetTeamWinRate(tournaments, playerInfo.team)} %
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   function TeamInfo() {
     return (
       <>
@@ -154,17 +195,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
           renderItem={RenderPlayersTeam}
           scrollEnabled={false}
         />
-        <Text
-          style={{
-            width: '100%',
-            paddingLeft: '4%',
-
-            padding: 5,
-            marginTop: 5,
-          }}
-        >
-          Total prizes won: {GetTeamPrizes()} $ | points {GetTeamPoints()}
-        </Text>
+        <TeamStat />
 
         {tournaments.filter(
           (i: any) => i.winner && i.winner.team.name === playerInfo.team
@@ -186,9 +217,11 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
             <FlatList
               style={{ width: '100%', backgroundColor: '#fff' }}
               horizontal
-              data={tournaments.filter(
-                (i: any) => i.winner && i.winner.team.name === playerInfo.team
-              )}
+              data={tournaments
+                .filter(
+                  (i: any) => i.winner && i.winner.team.name === playerInfo.team
+                )
+                .reverse()}
               renderItem={RenderTrophies}
             />
           </>
@@ -316,6 +349,10 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
         </TouchableOpacity>
         <PlayerInfo />
         <TeamInfo />
+        <GrandSlamModal
+          visible={grandSlamModal}
+          onClose={() => setGrandSlamModal(false)}
+        />
       </View>
     </ScrollView>
   )
@@ -370,4 +407,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  teamStatBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '92%',
+    marginVertical: 5,
+  },
+  columnCenter: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  teamStatTitle: {
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  teamStatValue: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  teamStatSeparator: { width: 1, height: '100%', backgroundColor: '#aaa' },
 })

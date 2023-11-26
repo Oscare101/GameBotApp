@@ -9,7 +9,7 @@ export interface Player {
 }
 
 export interface Tournament {
-  season?: number
+  season: number
   name: string
   prizes?: any[]
   winner?: Team | string
