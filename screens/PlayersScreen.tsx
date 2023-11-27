@@ -23,7 +23,7 @@ export default function PlayersScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
   const tournaments = useSelector((state: RootState) => state.tournaments)
 
-  const [sortBy, setSortBy] = useState<string>('Rating') // 'Teams
+  const [sortBy, setSortBy] = useState<string>('Rating') // Teams Role NickName
 
   function RenderPlayer({ item, index }: any) {
     return (
@@ -37,7 +37,9 @@ export default function PlayersScreen({ navigation }: any) {
           { backgroundColor: index % 2 === 0 ? '#fff' : '#eee' },
         ]}
       >
-        <Text style={styles.playerPosition}>{index + 1}</Text>
+        <Text style={styles.playerPosition}>
+          {sortBy === 'Team' ? Math.ceil((index + 1) / 5) : index + 1}
+        </Text>
         <Text style={styles.playerName}>{item.nickName}</Text>
         <Text style={styles.playerRating}>{item.rating}</Text>
         <Text style={styles.playerRole}>{item.role}</Text>

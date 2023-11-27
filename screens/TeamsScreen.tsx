@@ -64,16 +64,16 @@ export default function TeamsScreen({ navigation }: any) {
     return (
       <TouchableOpacity
         style={{
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'flex-start',
           justifyContent: 'center',
           width: '100%',
           backgroundColor: '#fff',
-          marginTop: 10,
+          marginVertical: 5,
           borderRadius: 5,
           padding: 5,
           overflow: 'hidden',
-          paddingHorizontal: 15,
+          paddingRight: 10,
         }}
         activeOpacity={0.8}
         onPress={() => {
@@ -82,40 +82,49 @@ export default function TeamsScreen({ navigation }: any) {
           })
         }}
       >
-        {/* <View style={{ position: 'absolute', zIndex: -1, opacity: 0.1 }}>
-          <TeamsBig team={item.name} />
-        </View> */}
+        <Text style={styles.position}>{index + 1}</Text>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            flex: 1,
           }}
         >
-          <Teams team={item.name} />
-          <Text style={styles.teamName}>{item.name}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
+            <Teams team={item.name} />
+            <Text style={styles.teamName}>{item.name}</Text>
 
-          <Text>points {item.lastYearPoints}</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}
-        >
-          <View style={styles.rowStart}>
-            <Text style={styles.teamStatTitle}>
-              Total prizes won:{' '}
-              {item.prizes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
-            </Text>
+            <Text style={styles.points}>points {item.lastYearPoints}</Text>
           </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
+            <View style={styles.rowStart}>
+              <Text style={styles.teamStatTitle}>
+                Total prizes won:{' '}
+                {item.prizes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
+              </Text>
+            </View>
 
-          <View style={styles.teamStatSeparator} />
-          <View style={styles.rowStart}>
-            <Text style={styles.teamStatTitle}>Win rate: {item.winRate} %</Text>
+            <View style={styles.teamStatSeparator} />
+            <View style={styles.rowStart}>
+              <Text style={styles.teamStatTitle}>
+                Win rate: {item.winRate} %
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -148,6 +157,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#eee',
   },
+  position: {
+    fontSize: 24,
+    fontWeight: '900',
+    marginRight: 5,
+    opacity: 0.3,
+    width: 28,
+
+    textAlign: 'center',
+  },
+  points: {
+    fontSize: 16,
+  },
   teamName: { fontSize: 20, flex: 1, textAlign: 'left', paddingLeft: 10 },
   teamStatBlock: {
     flexDirection: 'row',
@@ -164,6 +185,7 @@ const styles = StyleSheet.create({
   teamStatTitle: {
     fontSize: 14,
     opacity: 0.8,
+    fontStyle: 'italic',
   },
   teamStatValue: {
     fontSize: 18,
