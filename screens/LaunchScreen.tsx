@@ -32,10 +32,6 @@ export default function LaunchScreen({ navigation }: any) {
       )
       dispatch(updateTournaments(tournamentsDefault))
     }
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'NavigationApp' }],
-    // })
   }
 
   useEffect(() => {

@@ -2,23 +2,39 @@ import {
   IslandTeamBig,
   JupiterTeamBig,
   NOVATeamBig,
-  OGTeamBig,
   QuazarsTeamBig,
   SolidTeamBig,
-  TopGunTeamBig,
   VangardTeamBig,
+  EaglesTeamBig,
+  KadaganTeamBig,
+  YouthTeamBig,
+  UniversityTeamBig,
+  CanoeTeamBig,
+  MoonTeamBig,
+  DreamTeamBig,
+  FiveTeamBig,
+  SempraTeamBig,
+  GuardiansTeamBig,
 } from '../constants/icons'
 
-export default function TeamsBig(props: any) {
+export default function Teams(props: any) {
   const teams: any = {
     NOVA: <NOVATeamBig />,
     Quazars: <QuazarsTeamBig />,
-    OG: <OGTeamBig />,
+    Eagles: <EaglesTeamBig />,
     Vangard: <VangardTeamBig />,
     Island: <IslandTeamBig />,
     Solid: <SolidTeamBig />,
-    TopGun: <TopGunTeamBig />,
+    Kadagan: <KadaganTeamBig />,
     Jupiter: <JupiterTeamBig />,
+    Youth: <YouthTeamBig />,
+    Guardians: <GuardiansTeamBig />,
+    University: <UniversityTeamBig />,
+    Canoe: <CanoeTeamBig />,
+    Dream: <DreamTeamBig />,
+    Sempra: <SempraTeamBig />,
+    Five: <FiveTeamBig />,
+    Moon: <MoonTeamBig />,
   }
   return teams[props.team]
 }

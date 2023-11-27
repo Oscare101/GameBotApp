@@ -482,8 +482,8 @@ export function MotivationChange(
   const random: number = Math.random() > 0.5 ? 0.01 : -0.01
 
   if (weakTeam === winner && player.team === weakTeam) {
-    if (player.motivation + 0.2 <= 1) {
-      return player.motivation + 0.2
+    if (player.motivation + 0.1 <= 1) {
+      return player.motivation + 0.1
     } else {
       return player.motivation
     }

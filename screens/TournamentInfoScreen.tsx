@@ -129,7 +129,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
     )
   }
 
-  async function MatchWinnerFunc(t1: any, t2: any, value: any) {
+  async function MatchWinnerFunc(t1: any, t2: any, value: any, gridCell: any) {
     const tournamenIndex = tournaments.findIndex(function (i) {
       return i.name === tournament.name && i.season === tournament.season
     })
@@ -320,141 +320,163 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
     dispatch(clearLog())
     dispatch(updateTeam1(t1.team))
     dispatch(updateTeam2(t2.team))
+    return [t1.team, t2.team]
   }
 
   function TournamentGrid() {
     const showGrid = (
       <>
         <ExplainGrid />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '92%',
-            marginBottom: 40,
-          }}
-        >
-          {tournament.grid ? (
-            tournament.grid.map((grid: any, indexI: number) => (
-              <View
-                key={indexI}
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                  flex: 1,
-                  // width: '10%',
-                }}
-              >
-                {grid.map((pair: any, indexJ: number) => (
-                  <View
-                    key={indexJ}
-                    style={{
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      justifyContent: 'center',
-                      backgroundColor: '#fff',
-                      borderRadius: 10,
-                      elevation: 5,
-                      width: '90%',
-                      padding: 5,
-                      marginVertical: 5,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        opacity:
-                          pair.score.length && pair.winner === pair.team2
-                            ? 0.3
-                            : 1,
-                      }}
-                    >
-                      {pair.score
-                        ? pair.score.split('-')[0]
-                        : GetScore(pair.team1, log)}{' '}
-                      | {pair.team1}
-                    </Text>
+        <ScrollView horizontal style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 40,
+            }}
+          >
+            {tournament.grid ? (
+              tournament.grid.map((grid: any, indexI: number) => (
+                <View
+                  key={indexI}
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                  }}
+                >
+                  {grid.map((pair: any, indexJ: number) => (
                     <View
+                      key={indexJ}
                       style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#eee',
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        opacity:
-                          pair.score.length && pair.winner === pair.team1
-                            ? 0.3
-                            : 1,
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                        backgroundColor: '#fff',
+                        borderRadius: 10,
+                        elevation: 5,
+                        width: 120,
+                        padding: 5,
+                        margin: 5,
                       }}
                     >
-                      {pair.score
-                        ? pair.score.split('-')[1]
-                        : GetScore(pair.team1, log)}{' '}
-                      | {pair.team2}
-                    </Text>
-                    {pair.team1 && pair.team2 && !pair.score ? (
-                      <View style={styles.gridButtonBlock}>
-                        <TouchableOpacity
-                          style={[
-                            styles.gridButton,
-                            { backgroundColor: '#9dbef2' },
-                          ]}
-                          activeOpacity={0.8}
-                          onPress={() => {
-                            setGridCell({ grid: indexI, pair: indexJ })
-                            if (log.length) {
-                              setGameScreen(true)
-                            } else {
-                              StartGamePair(pair)
-                              setGameScreen(true)
-                            }
-                          }}
-                        >
-                          <Ionicons
-                            name="ios-play-outline"
-                            size={24}
-                            color="black"
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={[
-                            styles.gridButton,
-                            { backgroundColor: '#95deaf' },
-                          ]}
-                          activeOpacity={0.8}
-                          onPress={() => {
-                            setGridCell({
-                              grid: indexI,
-                              pair: indexJ,
-                            })
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          opacity:
+                            pair.score.length && pair.winner === pair.team2
+                              ? 0.3
+                              : 1,
+                        }}
+                      >
+                        {pair.score
+                          ? pair.score.split('-')[0]
+                          : GetScore(pair.team1, log)}{' '}
+                        | {pair.team1}
+                      </Text>
+                      <View
+                        style={{
+                          width: '100%',
+                          height: 1,
+                          backgroundColor: '#eee',
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          opacity:
+                            pair.score.length && pair.winner === pair.team1
+                              ? 0.3
+                              : 1,
+                        }}
+                      >
+                        {pair.score
+                          ? pair.score.split('-')[1]
+                          : GetScore(pair.team1, log)}{' '}
+                        | {pair.team2}
+                      </Text>
+                      {pair.team1 && pair.team2 && !pair.score ? (
+                        <View style={styles.gridButtonBlock}>
+                          <TouchableOpacity
+                            style={[
+                              styles.gridButton,
+                              { backgroundColor: '#9dbef2' },
+                            ]}
+                            activeOpacity={0.8}
+                            onPress={() => {
+                              setGridCell({ grid: indexI, pair: indexJ })
+                              if (log.length) {
+                                setGameScreen(true)
+                              } else {
+                                StartGamePair(pair)
+                                setGameScreen(true)
+                              }
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-play-outline"
+                              size={24}
+                              color="black"
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[
+                              styles.gridButton,
+                              { backgroundColor: '#95deaf' },
+                            ]}
+                            activeOpacity={0.8}
+                            onLongPress={async () => {
+                              await setGridCell({
+                                grid: indexI,
+                                pair: indexJ,
+                              })
+                              const teamsArr = StartGamePair(pair)
+                              const instantWinnersArr = InstantGame(
+                                teamsArr[0],
+                                teamsArr[1]
+                              )
 
-                            StartGamePair(pair)
-                            setInstantModal(true)
-                          }}
-                        >
-                          <Ionicons
-                            name="timer-outline"
-                            size={24}
-                            color="black"
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
-                      <></>
-                    )}
-                  </View>
-                ))}
-              </View>
-            ))
-          ) : (
-            <></>
-          )}
-        </View>
+                              MatchWinnerFunc(
+                                teamsArr[0],
+                                teamsArr[1],
+                                instantWinnersArr,
+                                {
+                                  grid: indexI,
+                                  pair: indexJ,
+                                }
+                              )
+                              AfterMatchPlayersDinamics(instantWinnersArr)
+                            }}
+                            onPress={() => {
+                              setGridCell({
+                                grid: indexI,
+                                pair: indexJ,
+                              })
+
+                              StartGamePair(pair)
+                              setInstantModal(true)
+                            }}
+                          >
+                            <Ionicons
+                              name="timer-outline"
+                              size={24}
+                              color="black"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      ) : (
+                        <></>
+                      )}
+                    </View>
+                  ))}
+                </View>
+              ))
+            ) : (
+              <></>
+            )}
+          </View>
+        </ScrollView>
       </>
     )
 
@@ -545,7 +567,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
           onClose={() => setGameScreen(false)}
           onWinners={(t1: any, t2: any, value: any) => {
             setGameScreen(false)
-            MatchWinnerFunc(t1, t2, value)
+            MatchWinnerFunc(t1, t2, value, gridCell)
           }}
         />
       </Modal>
@@ -557,7 +579,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
         onSuccess={() => {
           const instantWinnersArr = InstantGame(team1, team2)
 
-          MatchWinnerFunc(team1, team2, instantWinnersArr)
+          MatchWinnerFunc(team1, team2, instantWinnersArr, gridCell)
           AfterMatchPlayersDinamics(instantWinnersArr)
           setInstantModal(false)
         }}
