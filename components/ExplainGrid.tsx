@@ -17,12 +17,13 @@ export default function ExplainGrid() {
           style={[
             styles.gridButton,
             {
-              backgroundColor: '#95deaf',
+              backgroundColor: '#9dbef2',
             },
           ]}
         >
-          <Ionicons name="timer-outline" size={24} color="black" />
+          <Ionicons name="ios-play-outline" size={24} color="black" />
         </View>
+
         <Text style={{ flex: 1 }}> - see the match in real time (1-2 min)</Text>
       </View>
       <View
@@ -36,13 +37,13 @@ export default function ExplainGrid() {
           style={[
             styles.gridButton,
             {
-              backgroundColor: '#9dbef2',
+              backgroundColor: '#95deaf',
             },
           ]}
         >
-          <Ionicons name="ios-play-outline" size={24} color="black" />
+          <Ionicons name="timer-outline" size={24} color="black" />
         </View>
-        <Text style={{ flex: 1 }}> - instant result of the game</Text>
+        <Text style={{ flex: 1 }}> - instant result of the match</Text>
       </View>
     </View>
   )

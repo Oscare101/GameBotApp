@@ -22,8 +22,8 @@ export default function Navigation() {
     const bottomTabData = [
       {
         title: 'Rating',
-        iconActive: 'person-circle-sharp',
-        iconInactive: 'person-circle-outline',
+        iconActive: 'stats-chart',
+        iconInactive: 'stats-chart-outline',
         action: () => {
           navigation.navigate('RatingNavigation', {
             screen: 'RatingScreen',
@@ -34,8 +34,8 @@ export default function Navigation() {
 
       {
         title: 'Tournaments',
-        iconActive: 'rocket',
-        iconInactive: 'rocket-outline',
+        iconActive: 'grid',
+        iconInactive: 'grid-outline',
         action: () => {
           navigation.navigate('TournamentsNavigation', {
             screen: 'TournamentsScreen',
@@ -169,9 +169,6 @@ export default function Navigation() {
       <Stack.Screen
         options={{
           headerShown: false,
-          gestureDirection: 'horizontal',
-          gestureEnabled: true,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
         name="TournamentInfoScreen"
         component={TournamentInfoScreen}

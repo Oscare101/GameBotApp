@@ -25,6 +25,7 @@ import {
   GetMapsScore,
   GetScore,
   GetSortedPlayersByRating,
+  GetStageName,
   GetTeams,
   InstantGame,
   MotivationChange,
@@ -346,6 +347,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
                     justifyContent: 'space-around',
                   }}
                 >
+                  <Text>{GetStageName(grid.length)}</Text>
                   {grid.map((pair: any, indexJ: number) => (
                     <View
                       key={indexJ}

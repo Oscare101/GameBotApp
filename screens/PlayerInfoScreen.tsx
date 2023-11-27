@@ -208,7 +208,13 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
                 marginTop: 5,
               }}
             >
-              Team's rophies:
+              Team's rophies: (
+              {
+                tournaments.filter(
+                  (i: any) => i.winner && i.winner.team.name === playerInfo.team
+                ).length
+              }
+              )
             </Text>
             <FlatList
               style={{ width: '100%', backgroundColor: '#fff' }}
@@ -296,7 +302,17 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
                 padding: 5,
               }}
             >
-              Player's rophies:
+              Player's rophies:(
+              {
+                tournaments.filter(
+                  (i: any) =>
+                    i.winner &&
+                    i.winner.team.players.find(
+                      (i: any) => i.nickName === playerInfo.nickName
+                    )
+                ).length
+              }
+              )
             </Text>
             <FlatList
               style={{ width: '100%', backgroundColor: '#fff' }}
