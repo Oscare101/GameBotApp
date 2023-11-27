@@ -41,8 +41,7 @@ export default function ExplainingModal(props: any) {
           </View>
           <Text style={styles.description}>
             Each round consists of tacts, each tact is the activity of one of
-            the players of one team, who kills one of the opponents. It is not
-            difficult to calculate that the number of tacts in a roun The round
+            the players of one team, who kills one of the opponents. The round
             ends when one of the teams has no players left
           </Text>
           <View

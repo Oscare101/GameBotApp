@@ -147,19 +147,13 @@ export function GetEconomics(economics: any, win: boolean) {
   return +eco.toFixed(2)
 }
 
-export function InstantGame(
-  team1: any,
-  team2: any,
-  bestOf: number,
-  MRNumber: number,
-  additionalNumber: number
-) {
+export function InstantGame(team1: any, team2: any) {
   team1.economics = 0.5
   team2.economics = 0.5
   let winnersArr: any = []
 
   let logs: any = []
-  let rounds: number = MRNumber
+  let rounds: number = rules.MRNumber
   while (true) {
     if (
       GetScore(team1, logs) + GetScore(team2, logs) === rounds * 2 ||
@@ -174,12 +168,12 @@ export function InstantGame(
         }
         logs = []
       } else {
-        rounds += additionalNumber * 2
+        rounds += rules.additionalRounds * 2
       }
 
       if (
-        GetMapsScore(team1, winnersArr) === Math.floor(bestOf / 2 + 1) ||
-        GetMapsScore(team2, winnersArr) === Math.floor(bestOf / 2 + 1)
+        GetMapsScore(team1, winnersArr) === Math.floor(rules.bestOf / 2 + 1) ||
+        GetMapsScore(team2, winnersArr) === Math.floor(rules.bestOf / 2 + 1)
       ) {
         break
       }
@@ -465,4 +459,92 @@ export function GetTournamentsBySeason(tournaments: any) {
     }
   })
   return tArr
+}
+
+export function RatingChange(rating: number) {
+  const change: number = Math.random() > 0.5 ? 0.01 : -0.01
+  const result: number = +(rating + change).toFixed(2)
+  return result
+}
+
+export function MotivationChange(
+  player: Player,
+  team1: any,
+  team2: any,
+  winnersArr: any
+) {
+  const weakTeam =
+    GetTeamRating(team1) > GetTeamRating(team2) ? team2.name : team1.name
+  const winner =
+    GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
+      ? team1.name
+      : team2.name
+  const random: number = Math.random() > 0.5 ? 0.01 : -0.01
+
+  if (weakTeam === winner && player.team === weakTeam) {
+    if (player.motivation + 0.2 <= 1) {
+      return player.motivation + 0.2
+    } else {
+      return player.motivation
+    }
+  } else {
+    if (player.motivation + random >= 0 && player.motivation + random <= 1) {
+      return player.motivation + random
+    } else {
+      return player.motivation
+    }
+  }
+}
+
+export function TacticChange(
+  player: Player,
+  team1: any,
+  team2: any,
+  winnersArr: any
+) {
+  const randomWinner: number = Math.random() > 0.33 ? 0.01 : -0.01
+  const randomLoser: number = Math.random() > 0.66 ? 0.01 : -0.01
+
+  const winner =
+    GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
+      ? team1.name
+      : team2.name
+
+  if (player.team === winner) {
+    if (player.tactic + randomWinner <= 1) {
+      return player.tactic + randomWinner
+    } else {
+      return player.tactic
+    }
+  } else {
+    if (player.tactic + randomWinner >= 0) {
+      return player.tactic + randomLoser
+    } else {
+      return player.tactic
+    }
+  }
+}
+
+export function ExperienceChange(experience: number) {
+  const random: boolean = Math.random() > 0.5
+  const change: number = Math.random() > 0.5 ? 0.01 : -0.01
+
+  if (random) {
+    if (experience + change <= 1 && experience + change >= 0) {
+      return experience + change
+    } else {
+      return experience
+    }
+  } else {
+    return experience
+  }
+}
+
+export function ShuffleTeams(teamsArr: any) {
+  const shuffledArray = [...teamsArr]
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]
+  }
+  return shuffledArray
 }

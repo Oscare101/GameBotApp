@@ -14,16 +14,21 @@ import { Player, Team } from '../constants/interfaces'
 import { updateTeam2 } from '../redux/team2'
 import { clearLog, updateLog } from '../redux/logs'
 import {
+  ExperienceChange,
   GetAlivePlayers,
   GetDeadPlayerInRound,
   GetEconomics,
   GetMapsScore,
   GetScore,
+  GetSortedPlayersByRating,
   GetTeamRating,
   GetToolRandom,
   InstantGame,
+  MotivationChange,
   RandomPLayerToExecute,
   RandomTeamToAttak,
+  RatingChange,
+  TacticChange,
 } from '../functions/functions'
 import colors from '../constants/colors'
 import RenderLogs from '../components/RenderLog'
@@ -57,95 +62,14 @@ export default function Main(props: any) {
 
   const [gameIsActive, setGameIsActive] = useState<boolean>(false)
 
-  function GetSortedPlayersByRating() {
-    let arr: any = []
-    players.forEach((i: any) => {
-      arr.push(i)
-    })
-    arr.sort((a: any, b: any) => b.rating - a.rating)
-    return arr
-  }
-
   async function AfterMatchPlayersDinamics(winnersArr: any) {
-    function RatingChange(rating: number) {
-      const change: number = Math.random() > 0.5 ? 0.01 : -0.01
-      const result: number = +(rating + change).toFixed(2)
-      return result
-    }
-
-    function MotivationChange(player: Player) {
-      const weakTeam =
-        GetTeamRating(team1) > GetTeamRating(team2) ? team2.name : team1.name
-      const winner =
-        GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
-          ? team1.name
-          : team2.name
-      const random: number = Math.random() > 0.5 ? 0.01 : -0.01
-
-      if (weakTeam === winner && player.team === weakTeam) {
-        if (player.motivation + 0.2 <= 1) {
-          return player.motivation + 0.2
-        } else {
-          return player.motivation
-        }
-      } else {
-        if (
-          player.motivation + random >= 0 &&
-          player.motivation + random <= 1
-        ) {
-          return player.motivation + random
-        } else {
-          return player.motivation
-        }
-      }
-    }
-
-    function TacticChange(player: Player) {
-      const randomWinner: number = Math.random() > 0.33 ? 0.01 : -0.01
-      const randomLoser: number = Math.random() > 0.66 ? 0.01 : -0.01
-
-      const winner =
-        GetMapsScore(team1, winnersArr) > GetMapsScore(team2, winnersArr)
-          ? team1.name
-          : team2.name
-
-      if (player.team === winner) {
-        if (player.tactic + randomWinner <= 1) {
-          return player.tactic + randomWinner
-        } else {
-          return player.tactic
-        }
-      } else {
-        if (player.tactic + randomWinner >= 0) {
-          return player.tactic + randomLoser
-        } else {
-          return player.tactic
-        }
-      }
-    }
-
-    function ExperienceChange(experience: number) {
-      const random: boolean = Math.random() > 0.5
-      const change: number = Math.random() > 0.5 ? 0.01 : -0.01
-
-      if (random) {
-        if (experience + change <= 1 && experience + change >= 0) {
-          return experience + change
-        } else {
-          return experience
-        }
-      } else {
-        return experience
-      }
-    }
-
-    const newPlayersArr = GetSortedPlayersByRating().map((i: Player) => {
+    const newPlayersArr = GetSortedPlayersByRating(players).map((i: Player) => {
       if (i.team === team1.name || i.team === team2.name) {
         return {
           ...i,
           rating: +RatingChange(i.rating).toFixed(2),
-          motivation: +MotivationChange(i).toFixed(2),
-          tactic: +TacticChange(i).toFixed(2),
+          motivation: +MotivationChange(i, team1, team2, winnersArr).toFixed(2),
+          tactic: +TacticChange(i, team1, team2, winnersArr).toFixed(2),
           experience: +ExperienceChange(i.experience).toFixed(2),
         }
       } else {

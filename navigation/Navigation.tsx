@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -31,17 +31,7 @@ export default function Navigation() {
           })
         },
       },
-      // {
-      //   title: '',
-      //   iconActive: 'book',
-      //   iconInactive: 'book-outline',
-      //   action: () => {
-      //     navigation.navigate('MainNavigation', {
-      //       screen: 'MainScreen',
-      //       initial: false,
-      //     })
-      //   },
-      // },
+
       {
         title: 'Tournaments',
         iconActive: 'rocket',
@@ -109,20 +99,6 @@ export default function Navigation() {
     )
   }
 
-  // function MainNavigation() {
-  //   return (
-  //     <Stack.Navigator>
-  //       <Stack.Screen
-  //         options={{
-  //           headerShown: false,
-  //         }}
-  //         name="MainScreen"
-  //         component={Main}
-  //       />
-  //     </Stack.Navigator>
-  //   )
-  // }
-
   function RatingNavigation() {
     return (
       <Stack.Navigator>
@@ -161,13 +137,6 @@ export default function Navigation() {
             headerShown: false,
           }}
         />
-        {/* <Tab.Screen
-          name="MainNavigation"
-          component={MainNavigation}
-          options={{
-            headerShown: false,
-          }}
-        /> */}
         <Tab.Screen
           name="TournamentsNavigation"
           component={TournamentsNavigation}
@@ -184,7 +153,6 @@ export default function Navigation() {
       <Stack.Screen
         options={{
           headerShown: false,
-          headerLeft: () => null,
         }}
         name="LaunchScreen"
         component={LaunchScreen}
@@ -211,9 +179,6 @@ export default function Navigation() {
       <Stack.Screen
         options={{
           headerShown: false,
-          // gestureDirection: 'horizontal',
-          // gestureEnabled: true,
-          // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
         name="PlayerInfoScreen"
         component={PlayerInfoScreen}

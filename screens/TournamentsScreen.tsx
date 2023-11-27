@@ -14,7 +14,7 @@ import tournamentsDefault from '../constants/tournamentsDefault'
 import { updateTournaments } from '../redux/tournaments'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GetTournamentsBySeason } from '../functions/functions'
-
+import { Ionicons } from '@expo/vector-icons'
 export default function TournamentsScreen({ navigation }: any) {
   const tournaments: any = useSelector((state: RootState) => state.tournaments)
   const dispatch = useDispatch()
@@ -102,8 +102,10 @@ export default function TournamentsScreen({ navigation }: any) {
             <View style={[styles.tournamentsInfoCell, { width: '30%' }]}>
               {item.winner ? (
                 <Teams team={item.winner.team.name} />
+              ) : item.grid.length ? (
+                <Ionicons name="ios-time-outline" size={24} color="black" />
               ) : (
-                <Text style={styles.tournamentsInfoTitle}>?</Text>
+                <Text style={styles.tournamentsInfoTitle}>-</Text>
               )}
 
               <Text style={styles.tournamentsInfoName}>Winner</Text>

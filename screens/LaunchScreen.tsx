@@ -1,13 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect } from 'react'
-import { StatusBar, Text, View } from 'react-native'
+import { StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import playersDefault from '../constants/playersDefault'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updatePlayers } from '../redux/players'
 import tournamentsDefault from '../constants/tournamentsDefault'
 import { updateTournaments } from '../redux/tournaments'
+import { RootState } from '../redux'
 
 export default function LaunchScreen({ navigation }: any) {
+  const players = useSelector((state: RootState) => state.players)
+  const tournaments = useSelector((state: RootState) => state.tournaments)
+
   const dispatch = useDispatch()
   async function GetData() {
     const playersStorage = await AsyncStorage.getItem('players')
@@ -28,20 +32,51 @@ export default function LaunchScreen({ navigation }: any) {
       )
       dispatch(updateTournaments(tournamentsDefault))
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'NavigationApp' }],
-    })
+    // navigation.reset({
+    //   index: 0,
+    //   routes: [{ name: 'NavigationApp' }],
+    // })
   }
+
+  useEffect(() => {
+    if (players.length && tournaments.length) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'NavigationApp' }],
+      })
+    }
+  }, [players, tournaments])
 
   useEffect(() => {
     GetData()
   }, [])
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
       <Text>Loading</Text>
+      {players.length > 0 && tournaments.length > 0 ? (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'NavigationApp' }],
+            })
+          }}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10,
+            backgroundColor: '#9dbef2',
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ fontSize: 28, color: '#fff' }}>Start The Game</Text>
+        </TouchableOpacity>
+      ) : (
+        <></>
+      )}
     </View>
   )
 }

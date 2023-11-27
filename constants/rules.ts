@@ -6,4 +6,8 @@ export default {
 
   grandSlamBar: 4,
   grandSlamPrize: 1000000,
+
+  bestOf: 3,
+  MRNumber: 15,
+  additionalRounds: 3,
 }
