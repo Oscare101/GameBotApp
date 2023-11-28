@@ -4,7 +4,7 @@ const tournamentsDefault: Tournament[] = [
   {
     season: 1,
     name: 'Winter Stage',
-    prizes: [80000, 40000, 15000, 15000],
+    prizes: [75000, 30000, 12500, 12500, 5000, 5000, 5000, 5000],
     winner: '',
     points: [100, 50, 25, 25, 10, 10, 10, 10],
     cup: 1,
@@ -15,7 +15,7 @@ const tournamentsDefault: Tournament[] = [
   {
     season: 1,
     name: 'Spring Stage',
-    prizes: [150000, 80000, 35000, 35000],
+    prizes: [150000, 60000, 30000, 30000, 7500, 7500, 7500, 7500],
     winner: '',
     points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
@@ -26,7 +26,7 @@ const tournamentsDefault: Tournament[] = [
   {
     season: 1,
     name: 'World Qualifications',
-    prizes: [150000, 80000, 35000, 35000],
+    prizes: [150000, 60000, 30000, 30000, 7500, 7500, 7500, 7500],
     winner: '',
     points: [150, 75, 40, 40, 15, 15, 15, 15],
     cup: 3,
@@ -37,7 +37,7 @@ const tournamentsDefault: Tournament[] = [
   {
     season: 1,
     name: 'Summer Stage',
-    prizes: [80000, 40000, 15000, 15000],
+    prizes: [75000, 30000, 12500, 12500, 5000, 5000, 5000, 5000],
     winner: '',
     points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
@@ -49,7 +49,7 @@ const tournamentsDefault: Tournament[] = [
   {
     season: 1,
     name: 'Autumn Stage',
-    prizes: [150000, 80000, 35000, 35000],
+    prizes: [150000, 60000, 30000, 30000, 7500, 7500, 7500, 7500],
     winner: '',
     points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
