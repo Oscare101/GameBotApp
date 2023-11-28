@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   teamName: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: '500',
   },
   score: {

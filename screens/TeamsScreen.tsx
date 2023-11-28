@@ -20,6 +20,7 @@ import { RootState } from '../redux'
 import rules from '../constants/rules'
 import Teams from '../components/Teams'
 import TeamsBig from '../components/TeamBig'
+import TeamsHeader from '../components/TeamsHeader'
 
 export default function TeamsScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
@@ -102,7 +103,14 @@ export default function TeamsScreen({ navigation }: any) {
             <Teams team={item.name} />
             <Text style={styles.teamName}>{item.name}</Text>
 
-            <Text style={styles.points}>points {item.lastYearPoints}</Text>
+            <Text
+              style={[
+                styles.points,
+                { fontWeight: sortBy === 'RatingYearly' ? '500' : '400' },
+              ]}
+            >
+              points {item.lastYearPoints}
+            </Text>
           </View>
           <View
             style={{
@@ -113,7 +121,12 @@ export default function TeamsScreen({ navigation }: any) {
             }}
           >
             <View style={styles.rowStart}>
-              <Text style={styles.teamStatTitle}>
+              <Text
+                style={[
+                  styles.teamStatTitle,
+                  { fontWeight: sortBy === 'Prizes' ? '500' : '400' },
+                ]}
+              >
                 Total prizes won:{' '}
                 {item.prizes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
               </Text>
@@ -121,7 +134,12 @@ export default function TeamsScreen({ navigation }: any) {
 
             <View style={styles.teamStatSeparator} />
             <View style={styles.rowStart}>
-              <Text style={styles.teamStatTitle}>
+              <Text
+                style={[
+                  styles.teamStatTitle,
+                  { fontWeight: sortBy === 'WinRate' ? '500' : '400' },
+                ]}
+              >
                 Win rate: {item.winRate} %
               </Text>
             </View>
@@ -133,6 +151,10 @@ export default function TeamsScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
+      <TeamsHeader
+        sortBy={sortBy}
+        setSortBy={(value: string) => setSortBy(value)}
+      />
       <FlatList
         style={{ width: '92%' }}
         data={

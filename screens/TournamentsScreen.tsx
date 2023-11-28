@@ -15,9 +15,13 @@ import { updateTournaments } from '../redux/tournaments'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GetTournamentsBySeason } from '../functions/functions'
 import { Ionicons } from '@expo/vector-icons'
+import { useState } from 'react'
+import NewSeasonModal from '../components/NewSeasonModal'
 export default function TournamentsScreen({ navigation }: any) {
   const tournaments: any = useSelector((state: RootState) => state.tournaments)
   const dispatch = useDispatch()
+
+  const [newSeasonModal, setNewSeasonModal] = useState<boolean>(false)
 
   async function StartNewSeason() {
     const newSeason = tournamentsDefault.map((t: any) => {
@@ -35,6 +39,10 @@ export default function TournamentsScreen({ navigation }: any) {
     const sum = item.prizes.reduce(function (a: any, b: any) {
       return a + b
     })
+    const canStartTournament: boolean =
+      index === 0 || GetTournamentsBySeason(tournaments)[index - 1].winner
+        ? true
+        : false
     return (
       <>
         {index === 0 ||
@@ -105,7 +113,9 @@ export default function TournamentsScreen({ navigation }: any) {
               ) : item.grid.length ? (
                 <Ionicons name="ios-time-outline" size={24} color="black" />
               ) : (
-                <Text style={styles.tournamentsInfoTitle}>-</Text>
+                <Text style={styles.tournamentsInfoTitle}>
+                  {canStartTournament ? 'Start' : '-'}
+                </Text>
               )}
 
               <Text style={styles.tournamentsInfoName}>Winner</Text>
@@ -126,7 +136,7 @@ export default function TournamentsScreen({ navigation }: any) {
       ) : (
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={StartNewSeason}
+          onPress={() => setNewSeasonModal(true)}
           style={{
             alignItems: 'center',
             justifyContent: 'center',
@@ -143,6 +153,14 @@ export default function TournamentsScreen({ navigation }: any) {
         style={{ width: '100%' }}
         data={GetTournamentsBySeason(tournaments)}
         renderItem={RenderTournamentItem}
+      />
+      <NewSeasonModal
+        visible={newSeasonModal}
+        onClose={() => setNewSeasonModal(false)}
+        onSuccess={() => {
+          setNewSeasonModal(false)
+          StartNewSeason()
+        }}
       />
     </View>
   )

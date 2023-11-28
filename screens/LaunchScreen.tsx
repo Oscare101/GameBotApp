@@ -7,6 +7,8 @@ import { updatePlayers } from '../redux/players'
 import tournamentsDefault from '../constants/tournamentsDefault'
 import { updateTournaments } from '../redux/tournaments'
 import { RootState } from '../redux'
+import { updateGameInfo } from '../redux/gameInfo'
+import gameInfoDefault from '../constants/gameInfoDefault'
 
 export default function LaunchScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
@@ -20,6 +22,14 @@ export default function LaunchScreen({ navigation }: any) {
     } else {
       await AsyncStorage.setItem('players', JSON.stringify(playersDefault))
       dispatch(updatePlayers(playersDefault))
+    }
+
+    const gameInfoStorage = await AsyncStorage.getItem('gameInfo')
+    if (gameInfoStorage !== null) {
+      dispatch(updateGameInfo(JSON.parse(gameInfoStorage)))
+    } else {
+      await AsyncStorage.setItem('gameInfo', JSON.stringify(gameInfoDefault))
+      dispatch(updateGameInfo(gameInfoDefault))
     }
 
     const tournamentsStorage = await AsyncStorage.getItem('tournaments')

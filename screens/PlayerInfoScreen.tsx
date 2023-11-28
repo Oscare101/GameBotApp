@@ -20,39 +20,27 @@ import {
   GetTeamWinRate,
   GetTeams,
   GetTeamsInPlaces,
+  PlayerPriceAmount,
+  PlayerPriceKoef,
 } from '../functions/functions'
 import { Ionicons } from '@expo/vector-icons'
 import PlayerStatSegments from '../components/PlayerStatSegments'
 import Cups from '../components/Cups'
 import Teams from '../components/Teams'
 import GrandSlamModal from '../components/GrandSlamModal'
+import UpgradeTeamModal from '../components/UpgradeTeamModal'
+import { Player } from '../constants/interfaces'
+import ReshuffleTeamModal from '../components/ReshuffleTeamModal'
 
 export default function PlayerInfoScreen({ navigation, route }: any) {
   const players = useSelector((state: RootState) => state.players)
   const tournaments = useSelector((state: RootState) => state.tournaments)
+  const gameInfo = useSelector((state: RootState) => state.gameInfo)
 
   const [playerInfo, setPlayerInfo] = useState<any>(route.params.player)
   const [grandSlamModal, setGrandSlamModal] = useState<boolean>(false)
-
-  function PlayerPriceKoef(rating: number) {
-    const topPercent =
-      (players.length -
-        GetSortedPlayersByRating(players).findIndex(
-          (i: any) => i.rating === rating
-        )) /
-      players.length
-
-    return 1 + 4 * topPercent
-  }
-
-  function PlayerPriceAmount(rating: number) {
-    const price =
-      (rating -
-        GetSortedPlayersByRating(players)[players.length - 1].rating * 0.8) *
-      500000
-
-    return price
-  }
+  const [upgradeTeamModal, setUpgradeTeamModal] = useState<string>('')
+  const [reshuffleTeamModal, setReshuffleTeamModal] = useState<string>('')
 
   function RenderTrophies({ item, index }: any) {
     return (
@@ -181,7 +169,39 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
   function TeamInfo() {
     return (
       <>
-        <Text style={styles.modalPlayerName}>{playerInfo.team}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'relative',
+          }}
+        >
+          <Text style={styles.modalPlayerName}>{playerInfo.team}</Text>
+
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 10,
+              height: 40,
+              bottom: -30,
+              width: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            activeOpacity={0.8}
+            onPress={() => {
+              if (gameInfo.team === playerInfo.team) {
+                setUpgradeTeamModal(playerInfo.team)
+              } else {
+                setReshuffleTeamModal(playerInfo.team)
+              }
+            }}
+          >
+            <Ionicons name="ellipsis-vertical-circle" size={40} color="black" />
+          </TouchableOpacity>
+        </View>
+
         <TeamsBig team={playerInfo.team} />
         <FlatList
           style={{ width: '92%', marginTop: 10 }}
@@ -240,6 +260,15 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
             No trophies yet
           </Text>
         )}
+        <UpgradeTeamModal
+          data={upgradeTeamModal}
+          onClose={() => setUpgradeTeamModal('')}
+        />
+        <ReshuffleTeamModal
+          data={reshuffleTeamModal}
+          onClose={() => setReshuffleTeamModal('')}
+          onPractice={() => console.log('ok')}
+        />
       </>
     )
   }
@@ -274,8 +303,8 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
           <Text style={styles.modalPlayerInfo}>
             Price:{' '}
             {(
-              PlayerPriceAmount(playerInfo.rating) *
-              PlayerPriceKoef(playerInfo.rating)
+              PlayerPriceAmount(players, playerInfo.rating) *
+              PlayerPriceKoef(players, playerInfo.rating)
             )
               .toFixed()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
@@ -286,7 +315,6 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
         {tournaments.filter(
           (i: any) =>
             i.winner &&
-            i.winner.team.name === playerInfo.team &&
             i.winner.team.players.find(
               (i: any) => i.nickName === playerInfo.nickName
             )
@@ -302,7 +330,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
                 padding: 5,
               }}
             >
-              Player's rophies:(
+              Player's rophies: (
               {
                 tournaments.filter(
                   (i: any) =>

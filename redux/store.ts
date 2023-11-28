@@ -6,6 +6,7 @@ import mapPointsReducer from './mapPoints'
 import gameOptionsReducer from './gameOptions'
 import playersReducer from './players'
 import tournamentsReducer from './tournaments'
+import gameInfoReducer from './gameInfo'
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     gameOptions: gameOptionsReducer,
     players: playersReducer,
     tournaments: tournamentsReducer,
+    gameInfo: gameInfoReducer,
   },
 })

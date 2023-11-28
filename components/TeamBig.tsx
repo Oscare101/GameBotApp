@@ -17,7 +17,7 @@ import {
   GuardiansTeamBig,
 } from '../constants/icons'
 
-export default function Teams(props: any) {
+export default function TeamBig(props: any) {
   const teams: any = {
     NOVA: <NOVATeamBig />,
     Quazars: <QuazarsTeamBig />,

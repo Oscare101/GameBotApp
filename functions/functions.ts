@@ -2,13 +2,23 @@ import { Player } from '../constants/interfaces'
 import rules from '../constants/rules'
 
 export function GetTeamRating(team: any) {
-  let teamMotivationValue = 1 + (team.motivation || 0 * 20) / 100
-  let teamTacticValue = 1 + (team.tactic || 0 * 20) / 100
+  let teamMotivationValue =
+    1 + (team.motivation || 0 * rules.motivationMultiplayer) / 100
+  let teamTacticValue = 1 + (team.tactic || 0 * rules.tacticMultiplayer) / 100
+  let teamExperienceValue =
+    1 + (team.tactic || 0 * rules.experienceMultiplayer) / 100
+
   let teamEconimicsValue = 1 + (team.economics || 0 * 20) / 100
   let teamRating =
     team.players.reduce((total: any, player: any) => total + player.rating, 0) /
     team.players.length
-  return teamRating * teamMotivationValue * teamTacticValue * teamEconimicsValue
+  return (
+    teamRating *
+    teamMotivationValue *
+    teamTacticValue *
+    teamEconimicsValue *
+    teamExperienceValue
+  )
 }
 
 export function RandomTeamToAttak(team1: any, team2: any) {
@@ -363,19 +373,19 @@ export function GetTeamPoints(
   players: Player[],
   team: string
 ) {
-  let amountWon: number = 0
+  let points: number = 0
   if (tournaments) {
     tournaments.forEach((t: any) => {
       if (t.winner) {
         const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(
           (i: any) => i === team
         )
-        amountWon += t.points[teamIndexInPlace] || 0
+        points += t.points[teamIndexInPlace] || 0
       }
     })
   }
 
-  return amountWon
+  return points
 }
 
 export function GetTeamPointsLast7Tournaments(
@@ -383,7 +393,7 @@ export function GetTeamPointsLast7Tournaments(
   players: Player[],
   team: string
 ) {
-  let amountWon: number = 0
+  let points: number = 0
   if (tournaments) {
     const last7Tournaments =
       tournaments.filter((t: any) => t.winner).length > 7
@@ -397,12 +407,12 @@ export function GetTeamPointsLast7Tournaments(
         const teamIndexInPlace = GetTeamsInPlaces(t, players).findIndex(
           (i: any) => i === team
         )
-        amountWon += t.points[teamIndexInPlace] || 0
+        points += t.points[teamIndexInPlace] || 0
       }
     })
   }
 
-  return amountWon
+  return points
 }
 
 export function GetTeamWinRate(tournaments: any, team: string) {
@@ -482,8 +492,8 @@ export function MotivationChange(
   const random: number = Math.random() > 0.5 ? 0.01 : -0.01
 
   if (weakTeam === winner && player.team === weakTeam) {
-    if (player.motivation + 0.1 <= 1) {
-      return player.motivation + 0.1
+    if (player.motivation + 0.03 <= 1) {
+      return player.motivation + 0.03
     } else {
       return player.motivation
     }
@@ -511,13 +521,19 @@ export function TacticChange(
       : team2.name
 
   if (player.team === winner) {
-    if (player.tactic + randomWinner <= 1) {
+    if (
+      player.tactic + randomWinner <= 1 &&
+      player.tactic + randomWinner >= 0
+    ) {
       return player.tactic + randomWinner
     } else {
       return player.tactic
     }
   } else {
-    if (player.tactic + randomWinner >= 0) {
+    if (
+      player.tactic + randomWinner <= 1 &&
+      player.tactic + randomWinner >= 0
+    ) {
       return player.tactic + randomLoser
     } else {
       return player.tactic
@@ -552,4 +568,105 @@ export function ShuffleTeams(teamsArr: any) {
 export function GetStageName(pairs: number) {
   const stage: any = ['Final', 'Semi-Final', 'Quarter-Final', 'Qualification']
   return stage[Math.log2(pairs)]
+}
+
+export function GetKills(log: any, player: string, team: string) {
+  return log.filter(
+    (i: any) =>
+      i.status === 'kill' && i.kill.team === team && i.kill.nickName === player
+  ).length
+}
+
+export function GetDeaths(log: any, player: string, team: string) {
+  return log.filter(
+    (i: any) =>
+      i.status === 'kill' &&
+      i.death.team === team &&
+      i.death.nickName === player
+  ).length
+}
+
+export function GetRounds(log: any) {
+  return log.filter((i: any) => i.win).length
+}
+
+export function GetPlayedlRating(log: any, player: string, team: string) {
+  return +(
+    (GetKills(log, player, team) / GetRounds(log) +
+      GetRounds(log) / GetDeaths(log, player, team) +
+      GetKills(log, player, team) / GetDeaths(log, player, team)) /
+    3
+  ).toFixed(2)
+}
+
+export function GetTeamMotivation(players: Player[], team: string) {
+  const teamPlayers = players.filter((p: Player) => p.team === team)
+  const motivation: number = teamPlayers.reduce(
+    (total: any, player: any) => total + player.motivation,
+    0
+  )
+  return motivation
+}
+
+export function GetTeamTactic(players: Player[], team: string) {
+  const teamPlayers = players.filter((p: Player) => p.team === team)
+  const tactic: number = teamPlayers.reduce(
+    (total: any, player: any) => total + player.tactic,
+    0
+  )
+  return tactic
+}
+
+export function GetTeamExperience(players: Player[], team: string) {
+  const teamPlayers = players.filter((p: Player) => p.team === team)
+  const experience: number = teamPlayers.reduce(
+    (total: any, player: any) => total + player.experience,
+    0
+  )
+  return experience
+}
+
+export function GetTeamPlayersRating(players: Player[], team: string) {
+  const teamPlayers = players.filter((p: Player) => p.team === team)
+  const rating: number = teamPlayers.reduce(
+    (total: any, player: any) => total + player.rating,
+    0
+  )
+  return rating
+}
+
+export function PlayerPriceKoef(players: Player[], rating: number) {
+  const topPercent =
+    (players.length -
+      GetSortedPlayersByRating(players).findIndex(
+        (i: any) => i.rating === rating
+      )) /
+    players.length
+
+  return 1 + 4 * topPercent
+}
+
+export function PlayerPriceAmount(players: Player[], rating: number) {
+  const price =
+    (rating -
+      GetSortedPlayersByRating(players)[players.length - 1].rating * 0.8) *
+    500000
+
+  return Math.floor(price)
+}
+
+export function GetPracticeCost(players: any, team: string) {
+  const averageParameters =
+    (GetTeamMotivation(players, team) +
+      GetTeamTactic(players, team) +
+      GetTeamExperience(players, team)) /
+    3
+  const averagePrice = PlayerPriceAmount(
+    players,
+    GetTeamPlayersRating(players, team) / 5
+  )
+  const parameterKoef = 2
+  const totalPrice = averagePrice * averageParameters * parameterKoef
+
+  return totalPrice.toFixed()
 }

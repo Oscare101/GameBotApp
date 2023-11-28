@@ -17,8 +17,11 @@ import {
   ExperienceChange,
   GetAlivePlayers,
   GetDeadPlayerInRound,
+  GetDeaths,
   GetEconomics,
+  GetKills,
   GetMapsScore,
+  GetRounds,
   GetScore,
   GetSortedPlayersByRating,
   GetTeamRating,
@@ -41,12 +44,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import rules from '../constants/rules'
 import ExplainingModal from '../components/ExplainingModal'
 import { Ionicons } from '@expo/vector-icons'
-const delay: any = 50 // milliseconds for every action
 const showLogs: boolean = false
 const showRounds: boolean = false
-const bestOf: number = 3
-const MRNumber: number = 15 // best of x2 rounds, need number+1 won rounds to win the game
-const additionalRounds = 3 // mr after draw
 
 export default function Main(props: any) {
   const team1 = useSelector((state: RootState) => state.team1.team)
@@ -55,6 +54,7 @@ export default function Main(props: any) {
   const mapPoints = useSelector((state: RootState) => state.mapPoints)
   const players = useSelector((state: RootState) => state.players)
 
+  const [logsState, setLogsState] = useState<any[]>([])
   const [rounds, setRounds] = useState<number>(0)
   const [explainingModal, setExplainingModal] = useState<boolean>(false)
 
@@ -89,6 +89,7 @@ export default function Main(props: any) {
           GetScore(team2, log) === rounds + 1
         ) {
           if (GetScore(team1, log) !== GetScore(team2, log)) {
+            setLogsState(logsState.concat(log))
             let winnersArr: any = []
             mapPoints.forEach((point: string) => {
               winnersArr.push(point)
@@ -103,8 +104,10 @@ export default function Main(props: any) {
             }
 
             if (
-              GetMapsScore(team1, winnersArr) === Math.floor(bestOf / 2 + 1) ||
-              GetMapsScore(team2, winnersArr) === Math.floor(bestOf / 2 + 1)
+              GetMapsScore(team1, winnersArr) ===
+                Math.floor(rules.bestOf / 2 + 1) ||
+              GetMapsScore(team2, winnersArr) ===
+                Math.floor(rules.bestOf / 2 + 1)
             ) {
               clearInterval(intervalId)
               await AfterMatchPlayersDinamics(winnersArr)
@@ -190,7 +193,7 @@ export default function Main(props: any) {
             // ClearDeath()
           }
         }
-      }, delay)
+      }, rules.tactTimeout)
       return () => {
         clearInterval(intervalId)
       }
@@ -212,12 +215,12 @@ export default function Main(props: any) {
     }
     dispatch(updateTeam2(team2Value))
 
-    setRounds(rounds + additionalRounds)
+    setRounds(rounds + rules.additionalRounds)
     setGameIsActive(true)
   }
 
   async function StartTheNewMap() {
-    setRounds(MRNumber)
+    setRounds(rules.MRNumber)
     dispatch(clearLog())
 
     let team1Value = team1
@@ -233,32 +236,14 @@ export default function Main(props: any) {
   async function StartTheGame() {
     // SetTeams()
     if (team1.name && team2.name) {
-      setRounds(MRNumber)
+      setRounds(rules.MRNumber)
+      setLogsState([])
 
       dispatch(clearLog())
       dispatch(clearMapPoints())
 
       setGameIsActive(true)
     }
-  }
-
-  async function ClearGame() {
-    setRounds(MRNumber)
-
-    dispatch(clearLog())
-    dispatch(clearMapPoints())
-
-    let team1Value = {
-      name: '',
-      players: [{ nickName: '-', rating: 0 }],
-    }
-    dispatch(updateTeam1(team1Value))
-
-    let team2Value = {
-      name: '',
-      players: [{ nickName: '-', rating: 0 }],
-    }
-    dispatch(updateTeam2(team2Value))
   }
 
   function RenderPlayers1({ item }: any) {
@@ -279,24 +264,10 @@ export default function Main(props: any) {
         <Text style={styles.userName}>{item.nickName}</Text>
         <Text style={styles.userRating}>{item.rating}</Text>
         <Text style={styles.userDeath}>
-          {
-            log.filter(
-              (i: any) =>
-                i.status === 'kill' &&
-                i.kill.team === team1.name &&
-                i.kill.nickName === item.nickName
-            ).length
-          }
+          {GetKills(log, item.nickName, team1.name)}
         </Text>
         <Text style={styles.userKill}>
-          {
-            log.filter(
-              (i: any) =>
-                i.status === 'kill' &&
-                i.death.team === team1.name &&
-                i.death.nickName === item.nickName
-            ).length
-          }
+          {GetDeaths(log, item.nickName, team1.name)}
         </Text>
       </View>
     )
@@ -318,24 +289,10 @@ export default function Main(props: any) {
         }}
       >
         <Text style={styles.userKill}>
-          {
-            log.filter(
-              (i: any) =>
-                i.status === 'kill' &&
-                i.kill.team === team2.name &&
-                i.kill.nickName === item.nickName
-            ).length
-          }
+          {GetKills(log, item.nickName, team2.name)}
         </Text>
         <Text style={styles.userDeath}>
-          {
-            log.filter(
-              (i: any) =>
-                i.status === 'kill' &&
-                i.death.team === team2.name &&
-                i.death.nickName === item.nickName
-            ).length
-          }
+          {GetDeaths(log, item.nickName, team2.name)}
         </Text>
         <Text style={styles.userRating}>{item.rating}</Text>
 
@@ -357,10 +314,10 @@ export default function Main(props: any) {
     >
       <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
       <ScoreBlock
-        bestOf={bestOf}
+        bestOf={rules.bestOf}
         rounds={rounds}
-        MRNumber={MRNumber}
-        gameIsActive={gameIsActive}
+        MRNumber={rules.MRNumber}
+        gameIsActive={true}
       />
       <TeamHeader />
       <View
@@ -464,7 +421,7 @@ export default function Main(props: any) {
         ) : (
           <></>
         )}
-        {log.length || gameIsActive ? (
+        {gameIsActive ? (
           <></>
         ) : (
           <TouchableOpacity

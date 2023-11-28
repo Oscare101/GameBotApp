@@ -40,6 +40,8 @@ import ExplainGrid from '../components/ExplainGrid'
 import ExplainingModal from '../components/ExplainingModal'
 import { updatePlayers } from '../redux/players'
 import InstantModal from '../components/InstantModal'
+import { clearMapPoints } from '../redux/mapPoints'
+import RenderBigPrizes from '../components/RenderPrizes'
 
 const width = Dimensions.get('screen').width
 
@@ -58,77 +60,6 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
   const [gridCell, setGridCell] = useState<any>(null)
   const [grandSlamModal, setGrandSlamModal] = useState<boolean>(false)
   const [instantModal, setInstantModal] = useState<boolean>(false)
-
-  function GetTeamsInPlaces() {
-    let teamsArr: any = []
-    if (tournament.grid) {
-      for (let i = tournament.grid.length - 1; i >= 0; i--) {
-        tournament.grid[i].forEach((pair: any) => {
-          if (!teamsArr.includes(pair.winner)) {
-            teamsArr.push(pair.winner)
-          }
-        })
-      }
-      GetTeams(players).forEach((team: any) => {
-        if (!teamsArr.includes(team)) {
-          teamsArr.push(team)
-        }
-      })
-      return teamsArr
-    } else {
-      return []
-    }
-  }
-
-  function RenderBigPrizes({ item, index }: any) {
-    // const teamPlaces = GetTeamsInPlaces()
-
-    return (
-      <View
-        style={{
-          backgroundColor: '#ddd',
-          width: (width * 0.92) / 2 - width * 0.02,
-          marginLeft: index % 2 == 1 ? width * 0.04 : 0,
-          marginTop: width * 0.04,
-          padding: 10,
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 5,
-          overflow: 'hidden',
-        }}
-      >
-        <Text>
-          {index === 0
-            ? '1st'
-            : index === 1
-            ? '2nd'
-            : index >= 2 && index <= 3
-            ? '3-4th'
-            : index >= 4 && index <= 7
-            ? '5-8th'
-            : index >= 8 && index <= 15
-            ? '9-16th'
-            : ''}
-        </Text>
-        {tournament.winner ? (
-          <>
-            <Text style={{ fontSize: 20, fontWeight: '500' }}>
-              {GetTeamsInPlaces()[index]}
-            </Text>
-            <View style={{ position: 'absolute', zIndex: -1, opacity: 0.1 }}>
-              <TeamsBig team={GetTeamsInPlaces()[index]} />
-            </View>
-          </>
-        ) : (
-          <></>
-        )}
-        <Text style={{ fontSize: 20 }}>
-          {item.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $
-        </Text>
-      </View>
-    )
-  }
 
   async function MatchWinnerFunc(t1: any, t2: any, value: any, gridCell: any) {
     const tournamenIndex = tournaments.findIndex(function (i) {
@@ -204,20 +135,6 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
 
     dispatch(updateTournaments(newTournamentData))
     await AsyncStorage.setItem('tournaments', JSON.stringify(newTournamentData))
-
-    dispatch(
-      updateTeam1({
-        name: '',
-        players: [{ nickName: '-', rating: 0 }],
-      })
-    )
-    dispatch(
-      updateTeam2({
-        name: '',
-        players: [{ nickName: '-', rating: 0 }],
-      })
-    )
-    dispatch(clearLog())
   }
 
   async function AfterMatchPlayersDinamics(winnersArr: any) {
@@ -327,7 +244,7 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
   function TournamentGrid() {
     const showGrid = (
       <>
-        <ExplainGrid />
+        {tournament.winner ? <></> : <ExplainGrid />}
         <ScrollView horizontal style={{ flex: 1 }}>
           <View
             style={{
@@ -554,7 +471,9 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
         <FlatList
           style={{ width: '92%', marginBottom: 20 }}
           data={tournament.prizes}
-          renderItem={RenderBigPrizes}
+          renderItem={(item: any) => (
+            <RenderBigPrizes item={item} tournament={tournament} />
+          )}
           numColumns={2}
           scrollEnabled={false}
         />
@@ -566,9 +485,24 @@ export default function TournamentInfoScreen({ route, navigation }: any) {
       </View>
       <Modal visible={gameScreen}>
         <Main
-          onClose={() => setGameScreen(false)}
-          onWinners={(t1: any, t2: any, value: any) => {
+          onClose={() => {
             setGameScreen(false)
+            dispatch(clearLog())
+            dispatch(
+              updateTeam1({
+                name: '',
+                players: [{ nickName: '-', rating: 0 }],
+              })
+            )
+            dispatch(
+              updateTeam2({
+                name: '',
+                players: [{ nickName: '-', rating: 0 }],
+              })
+            )
+            dispatch(clearMapPoints())
+          }}
+          onWinners={(t1: any, t2: any, value: any) => {
             MatchWinnerFunc(t1, t2, value, gridCell)
           }}
         />

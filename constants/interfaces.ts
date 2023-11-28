@@ -46,3 +46,8 @@ export interface Log {
   win?: string
   id?: string
 }
+
+export interface GameInfo {
+  team: string
+  expences: number
+}

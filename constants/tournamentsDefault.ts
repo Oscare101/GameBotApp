@@ -6,7 +6,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'Winter Stage',
     prizes: [80000, 40000, 15000, 15000],
     winner: '',
-    points: [100, 50, 25, 25],
+    points: [100, 50, 25, 25, 10, 10, 10, 10],
     cup: 1,
     grid: [],
     description:
@@ -17,7 +17,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'Spring Stage',
     prizes: [150000, 80000, 35000, 35000],
     winner: '',
-    points: [100, 50, 25, 25],
+    points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
       'The second seasonal tournament, which is part of the four in the series.',
     cup: 2,
@@ -28,7 +28,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'World Qualifications',
     prizes: [150000, 80000, 35000, 35000],
     winner: '',
-    points: [150, 75, 40, 40],
+    points: [150, 75, 40, 40, 15, 15, 15, 15],
     cup: 3,
     grid: [],
     description:
@@ -39,7 +39,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'Summer Stage',
     prizes: [80000, 40000, 15000, 15000],
     winner: '',
-    points: [100, 50, 25, 25],
+    points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
       'The third seasonal tournament, which is part of the four in the series.',
     cup: 4,
@@ -51,7 +51,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'Autumn Stage',
     prizes: [150000, 80000, 35000, 35000],
     winner: '',
-    points: [100, 50, 25, 25],
+    points: [100, 50, 25, 25, 10, 10, 10, 10],
     description:
       'The last tournament of the season, which is part of the four in the series.',
     cup: 5,
@@ -63,7 +63,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'World Championship',
     prizes: [250000, 110000, 40000, 40000, 15000, 15000, 15000, 15000],
     winner: '',
-    points: [150, 75, 40, 40],
+    points: [150, 75, 40, 40, 15, 15, 15, 15],
     cup: 6,
     grid: [],
     description:
@@ -74,7 +74,7 @@ const tournamentsDefault: Tournament[] = [
     name: 'Major',
     prizes: [500000, 200000, 100000, 100000, 25000, 25000, 25000, 25000],
     winner: '',
-    points: [200, 100, 50, 50],
+    points: [200, 100, 50, 50, 20, 20, 20, 20],
     cup: 7,
     grid: [],
     description:
