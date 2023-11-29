@@ -184,7 +184,12 @@ export default function UpgradeTeamModal(props: any) {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 10,
-              backgroundColor: '#9dbef2',
+              backgroundColor:
+                GetTeamPrizes(tournaments, players, props.data) -
+                  (gameInfo.expences + +GetPracticeCost(players, props.data)) <
+                0
+                  ? '#eee'
+                  : '#9dbef2',
               borderRadius: 10,
               width: '92%',
               opacity:

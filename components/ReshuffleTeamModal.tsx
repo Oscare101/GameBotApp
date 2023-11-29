@@ -22,7 +22,7 @@ import {
 } from '../functions/functions'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux'
-import { GameInfo, Player } from '../constants/interfaces'
+import { GameInfo, Player, Tournament } from '../constants/interfaces'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { updatePlayers } from '../redux/players'
 import { updateGameInfo } from '../redux/gameInfo'
@@ -140,6 +140,20 @@ export default function ReshuffleTeamModal(props: any) {
     return Math.floor(price)
   }
 
+  const yourCash = (
+    <Text style={styles.description}>
+      Your cash ={' '}
+      <Text style={styles.bold}>
+        {(
+          GetTeamPrizes(tournaments, players, gameInfo.team) - gameInfo.expences
+        )
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
+        $
+      </Text>
+    </Text>
+  )
+
   const reshuffleInfo = (
     <View style={styles.modalBG}>
       <View style={styles.modalBlock}>
@@ -150,9 +164,7 @@ export default function ReshuffleTeamModal(props: any) {
         >
           <Ionicons name="close-outline" size={36} color="black" />
         </TouchableOpacity>
-
         <Text style={styles.title}>Team info {props.data}</Text>
-
         <Text style={styles.description}>
           You can buy players from other teams
         </Text>
@@ -166,7 +178,6 @@ export default function ReshuffleTeamModal(props: any) {
           team, so to speak trade
         </Text>
         <Text style={styles.description}>Choose any:</Text>
-
         <FlatList
           style={{ width: '92%', marginTop: 10 }}
           data={GetSortedPlayersByRating(players).filter(
@@ -174,25 +185,7 @@ export default function ReshuffleTeamModal(props: any) {
           )}
           renderItem={RenderPlayersTeam}
         />
-
-        <Text style={styles.description}>
-          prizes - expenses = <Text style={styles.bold}>your cash</Text>
-          {'\n'}
-          {GetTeamPrizes(tournaments, players, gameInfo.team)
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-          - {gameInfo.expences.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-          ={' '}
-          <Text style={styles.bold}>
-            {(
-              GetTeamPrizes(tournaments, players, gameInfo.team) -
-              gameInfo.expences
-            )
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-            $
-          </Text>
-        </Text>
+        {yourCash}
       </View>
     </View>
   )
@@ -203,17 +196,18 @@ export default function ReshuffleTeamModal(props: any) {
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={0.8}
-          onPress={() => setBuyPlayer('')}
+          onPress={() => {
+            setBuyPlayer('')
+
+            setTradePlayer('')
+          }}
         >
           <Ionicons name="arrow-back-outline" size={36} color="black" />
         </TouchableOpacity>
-
         <Text style={styles.title}>{buyPlayer}</Text>
-
         <Text style={styles.description}>
           Now choose the player you want to trade
         </Text>
-
         <FlatList
           style={{ width: '92%', marginTop: 10 }}
           data={GetSortedPlayersByRating(players).filter(
@@ -221,8 +215,7 @@ export default function ReshuffleTeamModal(props: any) {
           )}
           renderItem={RenderPlayersMyTeam}
         />
-
-        {tradePlayer && buyPlayer ? (
+        {buyPlayer ? (
           <View
             style={{
               width: '92%',
@@ -251,24 +244,39 @@ export default function ReshuffleTeamModal(props: any) {
               </Text>
             </View>
             <Ionicons name="chevron-down" size={24} color="black" />
-            <View
-              style={[
-                styles.playerBlock,
-                {
-                  backgroundColor: '#eee',
-                },
-              ]}
-            >
-              <Text style={styles.playerName}>{tradePlayer}</Text>
-              <Text style={styles.playerRating}>
-                {players.find((p: Player) => p.nickName === tradePlayer)
-                  .rating || ''}
-              </Text>
-              <Text style={styles.playerRole}>
-                {players.find((p: Player) => p.nickName === tradePlayer).role ||
-                  ''}
-              </Text>
-            </View>
+            {tradePlayer ? (
+              <View
+                style={[
+                  styles.playerBlock,
+                  {
+                    backgroundColor: '#eee',
+                  },
+                ]}
+              >
+                <Text style={styles.playerName}>{tradePlayer}</Text>
+                <Text style={styles.playerRating}>
+                  {players.find((p: Player) => p.nickName === tradePlayer)
+                    .rating || ''}
+                </Text>
+                <Text style={styles.playerRole}>
+                  {players.find((p: Player) => p.nickName === tradePlayer)
+                    .role || ''}
+                </Text>
+              </View>
+            ) : (
+              <View
+                style={[
+                  styles.playerBlock,
+                  {
+                    backgroundColor: '#eee',
+                    justifyContent: 'center',
+                  },
+                ]}
+              >
+                <Text style={{ fontSize: 18 }}>?</Text>
+              </View>
+            )}
+
             <Text style={{ fontSize: 24 }}>
               +{' '}
               {ReshufflePrice()
@@ -280,60 +288,60 @@ export default function ReshuffleTeamModal(props: any) {
         ) : (
           <></>
         )}
-
-        <Text style={styles.description}>
-          prizes - expenses = <Text style={styles.bold}>your cash</Text>
-          {'\n'}
-          {GetTeamPrizes(tournaments, players, gameInfo.team)
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-          - {gameInfo.expences.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-          ={' '}
-          <Text style={styles.bold}>
-            {(
-              GetTeamPrizes(tournaments, players, gameInfo.team) -
-              gameInfo.expences
-            )
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-            $
+        {yourCash}
+        {tournaments.find((t: Tournament) => !t.winner) ? (
+          <Text style={styles.error}>
+            You can make reshuffles only in the off-season. When the tournament
+            season has already ended, and the new one has not yet begun
           </Text>
-        </Text>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            // UpgradeTeam()
-            Reshuffle()
-          }}
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 10,
-            backgroundColor: '#9dbef2',
-            borderRadius: 10,
-            width: '92%',
-            opacity:
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              // UpgradeTeam()
+              Reshuffle()
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 10,
+              backgroundColor:
+                GetTeamPrizes(tournaments, players, gameInfo.team) -
+                  (gameInfo.expences + ReshufflePrice()) <
+                  0 ||
+                !tradePlayer ||
+                !buyPlayer
+                  ? '#eee'
+                  : '#9dbef2',
+              borderRadius: 10,
+              width: '92%',
+              opacity:
+                GetTeamPrizes(tournaments, players, gameInfo.team) -
+                  (gameInfo.expences + ReshufflePrice()) <
+                  0 ||
+                !tradePlayer ||
+                !buyPlayer
+                  ? 0.8
+                  : 1,
+            }}
+            disabled={
               GetTeamPrizes(tournaments, players, gameInfo.team) -
                 (gameInfo.expences + ReshufflePrice()) <
-              0
-                ? 0.8
-                : 1,
-          }}
-          disabled={
-            GetTeamPrizes(tournaments, players, gameInfo.team) -
-              (gameInfo.expences + ReshufflePrice()) <
-            0
-          }
-        >
-          <Text style={{ fontSize: 28, color: '#fff' }}>Buy</Text>
-          <Text style={{ fontSize: 18, color: '#fff' }}>
-            cost -{' '}
-            {ReshufflePrice()
-              .toFixed()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
-            $
-          </Text>
-        </TouchableOpacity>
+                0 ||
+              !tradePlayer ||
+              !buyPlayer
+            }
+          >
+            <Text style={{ fontSize: 28, color: '#fff' }}>Buy</Text>
+            <Text style={{ fontSize: 18, color: '#fff' }}>
+              cost -{' '}
+              {ReshufflePrice()
+                .toFixed()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}{' '}
+              $
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   )
@@ -416,4 +424,5 @@ const styles = StyleSheet.create({
   playerRating: { width: '13%', fontSize: 16 },
   playerRole: { width: '20%', fontSize: 16, fontWeight: '300' },
   playerTeam: { width: '30%', fontSize: 16 },
+  error: { color: '#ad0202', width: '92%', fontSize: 18 },
 })

@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native'
 import {
-  GetGrandSlamWinners,
   GetTeamPoints,
   GetTeamPointsLast7Tournaments,
   GetTeamPrizes,

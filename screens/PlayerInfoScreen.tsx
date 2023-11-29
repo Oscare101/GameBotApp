@@ -42,18 +42,79 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
   const [upgradeTeamModal, setUpgradeTeamModal] = useState<string>('')
   const [reshuffleTeamModal, setReshuffleTeamModal] = useState<string>('')
 
-  function RenderTrophies({ item, index }: any) {
+  function RenderTeamTrophies({ item, index }: any) {
+    function ShowGrandSlam() {
+      return (
+        GetGrandSlamWinners(tournaments, players).find(
+          (g: any) =>
+            g.season === item.season &&
+            g.grandSlamWinner.name === playerInfo.team
+        ) &&
+        (tournaments
+          .filter(
+            (i: any) => i.winner && i.winner.team.name === playerInfo.team
+          )
+          .reverse()[index - 1] === undefined
+          ? index === 0
+          : tournaments
+              .filter(
+                (i: any) => i.winner && i.winner.team.name === playerInfo.team
+              )
+              .reverse()[index - 1].season !== item.season)
+      )
+    }
     return (
       <>
-        {GetGrandSlamWinners(tournaments, players).find(
+        {ShowGrandSlam() ? (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              setGrandSlamModal(true)
+            }}
+            style={{
+              padding: 10,
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Cups cup={8} />
+            <Text>Season {item.season}</Text>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            navigation.navigate('TournamentInfoScreen', { tournament: item })
+          }}
+          style={{
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Cups cup={item.cup} />
+          <Text>Season {item.season}</Text>
+        </TouchableOpacity>
+      </>
+    )
+  }
+
+  function RenderPlayerTrophies({ item, index }: any) {
+    function ShowGrandSlam() {
+      return (
+        GetGrandSlamWinners(tournaments, players).find(
           (g: any) =>
-            g.season === item.season && g.grandSlamWinner === playerInfo.team
+            g.season === item.season &&
+            g.grandSlamWinner.players.find(
+              (i: any) => i.nickName === playerInfo.nickName
+            )
         ) &&
         (tournaments
           .filter(
             (i: any) =>
               i.winner &&
-              i.winner.team.name === playerInfo.team &&
               i.winner.team.players.find(
                 (i: any) => i.nickName === playerInfo.nickName
               )
@@ -64,12 +125,16 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
               .filter(
                 (i: any) =>
                   i.winner &&
-                  i.winner.team.name === playerInfo.team &&
                   i.winner.team.players.find(
                     (i: any) => i.nickName === playerInfo.nickName
                   )
               )
-              .reverse()[index - 1].season !== item.season) ? (
+              .reverse()[index - 1].season !== item.season)
+      )
+    }
+    return (
+      <>
+        {ShowGrandSlam() ? (
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
@@ -244,7 +309,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
                   (i: any) => i.winner && i.winner.team.name === playerInfo.team
                 )
                 .reverse()}
-              renderItem={RenderTrophies}
+              renderItem={RenderTeamTrophies}
             />
           </>
         ) : (
@@ -267,7 +332,6 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
         <ReshuffleTeamModal
           data={reshuffleTeamModal}
           onClose={() => setReshuffleTeamModal('')}
-          onPractice={() => console.log('ok')}
         />
       </>
     )
@@ -354,7 +418,7 @@ export default function PlayerInfoScreen({ navigation, route }: any) {
                     )
                 )
                 .reverse()}
-              renderItem={RenderTrophies}
+              renderItem={RenderPlayerTrophies}
             />
           </>
         ) : (

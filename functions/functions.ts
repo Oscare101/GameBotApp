@@ -341,7 +341,7 @@ export function GetGrandSlamWinners(tournaments: any, players: Player[]) {
           if (g.season === t.season) {
             return {
               ...g,
-              winners: [...grandSlamSeasons[index].winners, t.winner.team.name],
+              winners: [...grandSlamSeasons[index].winners, t.winner.team],
             }
           } else {
             return g
@@ -350,21 +350,28 @@ export function GetGrandSlamWinners(tournaments: any, players: Player[]) {
       } else {
         grandSlamSeasons.push({
           season: t.season,
-          winners: [t.winner.team.name],
+          winners: [t.winner.team],
         })
       }
     })
   const grandSlamWinners: any = []
+  // console.log('grandSlamSeasons', grandSlamSeasons[0].winners[0])
 
   grandSlamSeasons.forEach((g: any) => {
     GetTeams(players).forEach((team: string) => {
       if (
-        g.winners.filter((w: string) => w === team).length >= rules.grandSlamBar
+        g.winners.filter((w: any) => w.name === team).length >=
+        rules.grandSlamBar
       ) {
-        grandSlamWinners.push({ season: g.season, grandSlamWinner: team })
+        grandSlamWinners.push({
+          season: g.season,
+          grandSlamWinner: g.winners.find((w: any) => w.name === team),
+        })
       }
     })
   })
+  // console.log('grandSlamWinners', grandSlamWinners)
+
   return grandSlamWinners
 }
 
@@ -490,20 +497,14 @@ export function MotivationChange(
       ? team1.name
       : team2.name
   const random: number = Math.random() > 0.5 ? 0.01 : -0.01
+  let result: number = player.motivation
 
   if (weakTeam === winner && player.team === weakTeam) {
-    if (player.motivation + 0.03 <= 1) {
-      return player.motivation + 0.03
-    } else {
-      return player.motivation
-    }
+    result += 0.1
   } else {
-    if (player.motivation + random >= 0 && player.motivation + random <= 1) {
-      return player.motivation + random
-    } else {
-      return player.motivation
-    }
+    result += random
   }
+  return result > 1 ? 1 : result < 0 ? 0 : result
 }
 
 export function TacticChange(
@@ -520,40 +521,27 @@ export function TacticChange(
       ? team1.name
       : team2.name
 
+  let result: number = player.tactic
+
   if (player.team === winner) {
-    if (
-      player.tactic + randomWinner <= 1 &&
-      player.tactic + randomWinner >= 0
-    ) {
-      return player.tactic + randomWinner
-    } else {
-      return player.tactic
-    }
+    result += randomWinner
   } else {
-    if (
-      player.tactic + randomWinner <= 1 &&
-      player.tactic + randomWinner >= 0
-    ) {
-      return player.tactic + randomLoser
-    } else {
-      return player.tactic
-    }
+    result += randomLoser
   }
+  return result > 1 ? 1 : result < 0 ? 0 : result
 }
 
 export function ExperienceChange(experience: number) {
   const random: boolean = Math.random() > 0.5
   const change: number = Math.random() > 0.5 ? 0.01 : -0.01
+  let result: number = experience
 
   if (random) {
-    if (experience + change <= 1 && experience + change >= 0) {
-      return experience + change
-    } else {
-      return experience
-    }
+    result += change
   } else {
-    return experience
+    result = experience
   }
+  return result > 1 ? 1 : result < 0 ? 0 : result
 }
 
 export function ShuffleTeams(teamsArr: any) {
@@ -605,7 +593,7 @@ export function GetTeamMotivation(players: Player[], team: string) {
     (total: any, player: any) => total + player.motivation,
     0
   )
-  return motivation
+  return motivation / 5
 }
 
 export function GetTeamTactic(players: Player[], team: string) {
@@ -614,7 +602,7 @@ export function GetTeamTactic(players: Player[], team: string) {
     (total: any, player: any) => total + player.tactic,
     0
   )
-  return tactic
+  return tactic / 5
 }
 
 export function GetTeamExperience(players: Player[], team: string) {
@@ -623,7 +611,7 @@ export function GetTeamExperience(players: Player[], team: string) {
     (total: any, player: any) => total + player.experience,
     0
   )
-  return experience
+  return experience / 5
 }
 
 export function GetTeamPlayersRating(players: Player[], team: string) {
@@ -632,7 +620,7 @@ export function GetTeamPlayersRating(players: Player[], team: string) {
     (total: any, player: any) => total + player.rating,
     0
   )
-  return rating
+  return rating / 5
 }
 
 export function PlayerPriceKoef(players: Player[], rating: number) {
@@ -663,7 +651,7 @@ export function GetPracticeCost(players: any, team: string) {
     3
   const averagePrice = PlayerPriceAmount(
     players,
-    GetTeamPlayersRating(players, team) / 5
+    GetTeamPlayersRating(players, team)
   )
   const parameterKoef = 2
   const totalPrice = averagePrice * averageParameters * parameterKoef

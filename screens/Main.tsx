@@ -54,7 +54,7 @@ export default function Main(props: any) {
   const mapPoints = useSelector((state: RootState) => state.mapPoints)
   const players = useSelector((state: RootState) => state.players)
 
-  const [logsState, setLogsState] = useState<any[]>([])
+  // const [logsState, setLogsState] = useState<any[]>([])
   const [rounds, setRounds] = useState<number>(0)
   const [explainingModal, setExplainingModal] = useState<boolean>(false)
 
@@ -89,7 +89,7 @@ export default function Main(props: any) {
           GetScore(team2, log) === rounds + 1
         ) {
           if (GetScore(team1, log) !== GetScore(team2, log)) {
-            setLogsState(logsState.concat(log))
+            // setLogsState(logsState.concat(log))
             let winnersArr: any = []
             mapPoints.forEach((point: string) => {
               winnersArr.push(point)
@@ -237,7 +237,7 @@ export default function Main(props: any) {
     // SetTeams()
     if (team1.name && team2.name) {
       setRounds(rules.MRNumber)
-      setLogsState([])
+      // setLogsState([])
 
       dispatch(clearLog())
       dispatch(clearMapPoints())
