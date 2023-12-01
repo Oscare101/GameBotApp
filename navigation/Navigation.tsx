@@ -13,6 +13,7 @@ import LaunchScreen from '../screens/LaunchScreen'
 import PlayerInfoScreen from '../screens/PlayerInfoScreen'
 import RatingScreen from '../screens/RatingScreen'
 import TeamsScreen from '../screens/TeamsScreen'
+import InformationScreen from '../screens/InformationScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -31,7 +32,6 @@ export default function Navigation() {
           })
         },
       },
-
       {
         title: 'Tournaments',
         iconActive: 'grid',
@@ -39,6 +39,17 @@ export default function Navigation() {
         action: () => {
           navigation.navigate('TournamentsNavigation', {
             screen: 'TournamentsScreen',
+            initial: false,
+          })
+        },
+      },
+      {
+        title: 'Information',
+        iconActive: 'information-circle',
+        iconInactive: 'information-circle-outline',
+        action: () => {
+          navigation.navigate('InformationNavigation', {
+            screen: 'InformationScreen',
             initial: false,
           })
         },
@@ -66,7 +77,7 @@ export default function Navigation() {
             }}
             activeOpacity={0.8}
             style={{
-              width: '25%',
+              width: '33%',
               alignItems: 'center',
               justifyContent: 'center',
               paddingHorizontal: 10,
@@ -82,6 +93,20 @@ export default function Navigation() {
           </TouchableOpacity>
         ))}
       </View>
+    )
+  }
+
+  function InformationNavigation() {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="InformationScreen"
+          component={InformationScreen}
+        />
+      </Stack.Navigator>
     )
   }
 
@@ -140,6 +165,13 @@ export default function Navigation() {
         <Tab.Screen
           name="TournamentsNavigation"
           component={TournamentsNavigation}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="InformationNavigation"
+          component={InformationNavigation}
           options={{
             headerShown: false,
           }}

@@ -447,7 +447,7 @@ export function GetTeamPrizes(
   team: string
 ) {
   const grandSlams = GetGrandSlamWinners(tournaments, players).filter(
-    (g: any) => g.grandSlamWinner === team
+    (g: any) => g.grandSlamWinner.name === team
   ).length
 
   let amountWon: number = 0

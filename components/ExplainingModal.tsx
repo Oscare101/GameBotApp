@@ -7,6 +7,7 @@ import {
   Dimensions,
   StatusBar,
   StyleSheet,
+  ScrollView,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
@@ -29,6 +30,7 @@ export default function ExplainingModal(props: any) {
           >
             <Ionicons name="close-outline" size={36} color="black" />
           </TouchableOpacity>
+
           <View
             style={{
               flexDirection: 'row',
@@ -134,6 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+    alignSelf: 'center',
   },
   exitButton: {
     position: 'absolute',
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   description: {
-    fontSize: 16,
+    fontSize: 14,
     width: '92%',
   },
   question: { fontSize: 16, margin: 10 },
