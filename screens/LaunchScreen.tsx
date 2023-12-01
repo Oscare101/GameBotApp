@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect } from 'react'
-import { StatusBar, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import playersDefault from '../constants/playersDefault'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePlayers } from '../redux/players'
@@ -9,7 +9,6 @@ import { updateTournaments } from '../redux/tournaments'
 import { RootState } from '../redux'
 import { updateGameInfo } from '../redux/gameInfo'
 import gameInfoDefault from '../constants/gameInfoDefault'
-
 export default function LaunchScreen({ navigation }: any) {
   const players = useSelector((state: RootState) => state.players)
   const tournaments = useSelector((state: RootState) => state.tournaments)
@@ -58,9 +57,19 @@ export default function LaunchScreen({ navigation }: any) {
   }, [])
 
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#eee'} />
-      <Text>Loading</Text>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
+      <View style={{ transform: [{ scale: 0.3 }] }}>
+        <Image source={require('../assets/icon.png')} />
+      </View>
+
       {players.length > 0 && tournaments.length > 0 ? (
         <TouchableOpacity
           activeOpacity={0.8}
